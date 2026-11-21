@@ -1,0 +1,4262 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <!-- Meta tags obrigatórias -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#173a39">
+    <script>
+      /* Define o tema ANTES da primeira pintura (evita "piscar" claro): usa a escolha salva ou a do sistema */
+      (function () {
+        var tema = "light";
+        try { tema = localStorage.getItem("prouesse_tema") || ""; } catch (e) {}
+        if (tema !== "light" && tema !== "dark")
+          tema = (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+        document.documentElement.setAttribute("data-bs-theme", tema);
+      })();
+    </script>
+
+    <!-- Dependências: jQuery 3.7.1 e Bootstrap 5.3.3 (o bundle já inclui o Popper) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <style>
+/* =====================================================================
+   TEMA DO PROUESSE (sobre Bootstrap 5)
+   Toda cor, raio e sombra vem das variáveis abaixo: para mudar a
+   identidade visual, altere somente este bloco.
+   ===================================================================== */
+:root {
+  color-scheme: light;   /* controles nativos (setas do campo numérico, rolagem) seguem o tema da página, não o do sistema */
+  --marca:        #1f6f6b;   /* teal principal */
+  --marca-escura: #153f3e;   /* cabeçalhos de tabela, navegação */
+  --marca-media:  #2b8a85;
+  --marca-clara:  #e3f0ee;   /* fundos suaves, hover */
+  --marca-link:   #1f6f6b;   /* links e textos de destaque */
+  --titulo:       #153f3e;   /* títulos e textos em destaque */
+  --destaque:     #7fd8cc;   /* aba ativa na barra escura */
+  --fundo:        #eef3f3;
+  --superficie:   #ffffff;
+  --texto:        #1c2b2b;
+  --texto-suave:  #5a6e6e;
+  --borda:        #d3e0df;
+  --perigo:       #c0392b;
+  --perigo-claro: #fdeceb;
+  --sucesso:      #17803d;
+  --sucesso-claro:#e6f5ec;
+  --sucesso-texto:#17803d;
+  --texto-erro:   #7d1f16;   /* texto sobre fundo de erro */
+  --sup-alt:      #f6faf9;   /* painéis internos, rodapé de modal */
+  --hover:        #f3f9f8;   /* linha de tabela sob o mouse */
+  --linha:        #e4eded;   /* divisórias de tabela */
+  --zebra:        #f7fbfa;
+  --col-primeira: #f0f6f5;
+  --cabecalho-2:  #1d514f;   /* 2ª linha do cabeçalho de tabela */
+  --pilula-borda: #c4dcd9;
+  --pilula-hover: #d3e8e5;
+  --campo-desab:  #f0f4f4;
+  --placeholder:  #8da0a0;
+  --check-borda:  #7f9a99;
+  --cartao-sombra:rgba(8, 30, 29, .35);
+  --raio:         12px;
+  --raio-pequeno: 8px;
+  --sombra:       0 1px 2px rgba(21, 63, 62, .06), 0 4px 16px rgba(21, 63, 62, .08);
+  --altura-nav:   56px;      /* barra principal */
+  --altura-subnav:48px;      /* barra de abas de "Gerar configuração" */
+
+  /* Faz o Bootstrap usar a cor da marca (links, foco, checks, abas...) */
+  --bs-primary: var(--marca);
+  --bs-primary-rgb: 31, 111, 107;
+  --bs-link-color: var(--marca-link);
+  --bs-link-color-rgb: 31, 111, 107;
+  --bs-link-hover-color: var(--titulo);
+  --bs-link-hover-color-rgb: 21, 63, 62;
+  --bs-body-color: var(--texto);
+  --bs-body-bg: var(--superficie);
+  --bs-border-color: var(--borda);
+  --bs-focus-ring-color: rgba(31, 111, 107, .25);
+}
+
+/* ---------- Tema escuro (data-bs-theme="dark" no <html>; botão na barra superior) ---------- */
+:root[data-bs-theme="dark"] {
+  --marca:        #26807a;
+  --marca-escura: #1c5651;
+  --marca-media:  #3aa39b;
+  --marca-clara:  #1f3433;
+  --marca-link:   #6cd0c6;
+  --titulo:       #a5e3da;
+  --destaque:     #7fd8cc;
+  --fundo:        #0e1616;
+  --superficie:   #172222;
+  --texto:        #e2edec;
+  --texto-suave:  #9db3b1;
+  --borda:        #2c3f3e;
+  --perigo:       #d1493d;
+  --perigo-claro: #3a1f1c;
+  --sucesso:      #1f8f4d;
+  --sucesso-claro:#14301f;
+  --sucesso-texto:#6fe09a;
+  --texto-erro:   #ffb4ab;
+  --sup-alt:      #1b2a2a;
+  --hover:        #1d2e2d;
+  --linha:        #263838;
+  --zebra:        #1a2727;
+  --col-primeira: #1d2d2d;
+  --cabecalho-2:  #226660;
+  --pilula-borda: #2f4a48;
+  --pilula-hover: #28403e;
+  --campo-desab:  #202e2e;
+  --placeholder:  #6f8886;
+  --check-borda:  #6f8a89;
+  --sombra:       0 1px 2px rgba(0, 0, 0, .4), 0 4px 16px rgba(0, 0, 0, .35);
+  --cartao-sombra:rgba(0, 0, 0, .6);
+  --bs-primary-rgb: 38, 128, 122;
+  --bs-link-color-rgb: 108, 208, 198;
+  --bs-link-hover-color-rgb: 165, 227, 218;
+  --bs-focus-ring-color: rgba(108, 208, 198, .3);
+  color-scheme: dark;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.desabilitado { display: none; }
+footer { text-align: center; }
+
+/* ---------- Botões ---------- */
+.btn {
+  --bs-btn-border-radius: var(--raio-pequeno);
+  --bs-btn-font-weight: 500;
+  --bs-btn-padding-x: 1.1rem;
+  --bs-btn-padding-y: .5rem;
+  transition: background-color .15s, border-color .15s, box-shadow .15s, transform .05s;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary {
+  --bs-btn-bg: var(--marca);            --bs-btn-border-color: var(--marca);
+  --bs-btn-hover-bg: var(--marca-escura);--bs-btn-hover-border-color: var(--marca-escura);
+  --bs-btn-active-bg: var(--marca-escura);--bs-btn-active-border-color: var(--marca-escura);
+  --bs-btn-disabled-bg: var(--marca);   --bs-btn-disabled-border-color: var(--marca);
+}
+.btn-success {
+  --bs-btn-bg: var(--sucesso);          --bs-btn-border-color: var(--sucesso);
+  --bs-btn-hover-bg: #12662f;           --bs-btn-hover-border-color: #12662f;
+  --bs-btn-active-bg: #12662f;          --bs-btn-active-border-color: #12662f;
+}
+.btn-danger {
+  --bs-btn-bg: var(--perigo);           --bs-btn-border-color: var(--perigo);
+  --bs-btn-hover-bg: #a22f23;           --bs-btn-hover-border-color: #a22f23;
+  --bs-btn-active-bg: #a22f23;          --bs-btn-active-border-color: #a22f23;
+}
+.btn-info {
+  --bs-btn-color: #fff;                 --bs-btn-hover-color: #fff;
+  --bs-btn-bg: var(--marca-media);      --bs-btn-border-color: var(--marca-media);
+  --bs-btn-hover-bg: var(--marca);      --bs-btn-hover-border-color: var(--marca);
+}
+
+/* Botão "X" de excluir linha: discreto, só ganha cor ao passar o mouse */
+.b-excluir {
+  width: 36px; height: 36px; padding: 0; line-height: 1;
+  --bs-btn-color: var(--texto-erro);
+  --bs-btn-bg: var(--perigo-claro);       --bs-btn-border-color: transparent;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--perigo);       --bs-btn-hover-border-color: var(--perigo);
+  --bs-btn-active-color: #fff;
+}
+
+/* ---------- Campos de formulário ---------- */
+.form-control, .form-select {
+  border-color: var(--borda);
+  border-radius: var(--raio-pequeno);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--marca-media);
+  box-shadow: 0 0 0 .2rem rgba(31, 111, 107, .18);
+}
+.form-control::placeholder { color: var(--placeholder); }
+input[type="radio"], input[type="checkbox"] { accent-color: var(--marca); }
+.form-check-input { border-color: var(--check-borda); }
+.form-check-input:checked { background-color: var(--marca); border-color: var(--marca); }
+.form-check-input:focus { border-color: var(--marca-media); box-shadow: 0 0 0 .2rem rgba(31, 111, 107, .18); }
+.form-group { margin-bottom: 1.1rem; }
+label { cursor: pointer; }
+input[type="number"] { text-align: center; }
+
+/* ---------- Barra principal (Apresentação, Como utilizar, ...) ---------- */
+body > nav {
+  position: sticky; top: 0; z-index: 1030;
+}
+.nav-principal {
+  min-height: var(--altura-nav);
+  padding: 0 1rem;
+  gap: .25rem;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: linear-gradient(135deg, #0d2827 0%, #153f3e 55%, #1b5654 100%);
+  border-bottom: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+}
+.nav-principal::-webkit-scrollbar { display: none; }
+.nav-principal::before {
+  content: "Prouesse";
+  align-self: center;
+  margin-right: 1.25rem;
+  padding-right: 1.25rem;
+  border-right: 1px solid rgba(255, 255, 255, .18);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: .02em;
+}
+.nav-principal .nav-link {
+  display: flex; align-items: center;
+  color: rgba(255, 255, 255, .72);
+  font-weight: 500;
+  white-space: nowrap;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  padding: 0 1rem;
+  margin: 0;
+}
+.nav-principal .nav-link:hover,
+.nav-principal .nav-link:focus-visible { color: #fff; background: rgba(255, 255, 255, .06); }
+.nav-principal .nav-link.active {
+  color: #fff;
+  background: rgba(255, 255, 255, .08);
+  border-bottom-color: var(--destaque);
+}
+
+/* Botão claro/escuro (extremo direito da barra principal) */
+.btn-tema {
+  position: sticky; right: 0;
+  margin-left: auto; align-self: center; flex: 0 0 auto;
+  width: 38px; height: 38px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #fff; background: #1a4a48;
+  border: 1px solid rgba(255, 255, 255, .25); border-radius: 50%;
+  cursor: pointer;
+  transition: background-color .15s, transform .15s, border-color .15s;
+}
+.btn-tema:hover { background: #24625f; border-color: rgba(255, 255, 255, .5); }
+.btn-tema:active { transform: scale(.94); }
+.btn-tema:focus-visible { outline: 3px solid var(--destaque); outline-offset: 2px; }
+.btn-tema svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.btn-tema .icone-sol { display: none; }
+[data-bs-theme="dark"] .btn-tema .icone-sol { display: block; }
+[data-bs-theme="dark"] .btn-tema .icone-lua { display: none; }
+
+/* ---------- Abas internas ("Gerar configuração") ---------- */
+#nav-gerar > div > nav {
+  position: sticky; top: var(--altura-nav); z-index: 1020;
+}
+.menu-background {
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borda);
+  padding: 0 1rem;
+  gap: .15rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.menu-background .nav-link {
+  display: flex; align-items: center;
+  min-height: var(--altura-subnav);
+  white-space: nowrap;
+  color: var(--texto-suave);
+  font-weight: 500;
+  font-size: .95rem;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  margin: 0;
+  padding: 0 .9rem;
+}
+.menu-background .nav-link:hover { color: var(--marca-link); background: var(--marca-clara); }
+.menu-background .nav-link.active {
+  color: var(--titulo);
+  background: transparent;
+  border-bottom-color: var(--marca);
+  font-weight: 600;
+}
+
+/* Terceiro nível (abas de resultados): botões em forma de pílula */
+#aba6 .menu-background {
+  position: static;
+  background: transparent;
+  border-bottom: 0;
+  padding: 1rem 1.5rem .25rem;
+  gap: .5rem;
+  overflow-x: auto;
+}
+#aba6 .menu-background .nav-link {
+  min-height: 0;
+  padding: .45rem 1rem;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  background: var(--superficie);
+  color: var(--texto-suave);
+}
+#aba6 .menu-background .nav-link:hover { background: var(--marca-clara); color: var(--marca-link); }
+#aba6 .menu-background .nav-link.active {
+  background: var(--marca); border-color: var(--marca); color: #fff;
+}
+
+/* ---------- Cartões de conteúdo (Apresentação, Como utilizar, Sobre, Início) ---------- */
+.conteudo {
+  background: var(--superficie);
+  max-width: 980px;
+  margin: 1.75rem auto;
+  padding: 2rem clamp(1.1rem, 4vw, 2.75rem) 2.25rem;
+  border-radius: calc(var(--raio) + 4px);
+  box-shadow: var(--sombra);
+  text-align: left;
+}
+.conteudo h1 {
+  font-size: clamp(1.6rem, 3.2vw, 2.1rem);
+  font-weight: 700;
+  color: var(--titulo);
+  margin-bottom: 1.25rem;
+}
+.conteudo h1.text-center { margin-bottom: 1.75rem; }
+.conteudo h1.text-center::after {
+  content: ""; display: block; width: 56px; height: 4px; margin: .7rem auto 0;
+  border-radius: 4px; background: linear-gradient(90deg, var(--marca), var(--destaque));
+}
+.conteudo h4 {
+  font-size: 1.05rem;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--texto);
+}
+.conteudo h4 p { margin-bottom: 1rem; }
+.conteudo h4 ul { padding-left: 0; list-style: none; margin: .5rem 0 1.25rem; }
+.conteudo h4 ul li {
+  position: relative; padding: .35rem 0 .35rem 1.8rem;
+}
+.conteudo h4 ul li::before {
+  content: ""; position: absolute; left: .3rem; top: .95em;
+  width: .6rem; height: .6rem; border-radius: 50%; background: var(--marca-media);
+}
+.conteudo a { text-underline-offset: 3px; }
+.conteudo hr { border-color: var(--borda); opacity: 1; margin: 1.25rem 0; }
+
+#aba0 .conteudo > div:first-child > div:first-child { font-weight: 600; font-size: 1.15rem; margin-bottom: .9rem; }
+#aba0 .conteudo .btn { margin: 0 .35rem .5rem 0; padding: .6rem 1.25rem; }
+.externo label { font-weight: 500; margin-bottom: .5rem; }
+.externo .form-control { max-width: 520px; }
+
+/* ---------- Painel "Gerar configuração" ---------- */
+.geracao_dados { background: var(--fundo); min-height: calc(100vh - var(--altura-nav)); }
+#aba1, #aba2, #aba3, #aba4 { padding: 1.25rem 1.5rem 2rem; }
+#aba5, #aba7 { padding: 1.5rem; }
+#aba6 { padding-bottom: 1.5rem; }
+.geracao_dados > div > .tab-content > .tab-pane { min-height: 50vh; }
+#aba3.tab-pane:empty, #aba4.tab-pane:empty { min-height: 0; }
+
+/* Mensagens "É necessário inserir dados na aba ..." (aba3 e aba4 antes do preenchimento) */
+#aba3:not(:has(table)), #aba4:not(:has(table)) {
+  max-width: 720px; margin: 1.5rem auto; padding: 1.25rem 1.5rem;
+  background: var(--superficie); border-radius: var(--raio); box-shadow: var(--sombra);
+  border-left: 4px solid var(--marca-media); text-align: left !important;
+  color: var(--texto-suave); min-height: 0 !important;
+}
+
+/* ---------- Tabelas de entrada de dados ---------- */
+.tabela-prouesse {
+  --bs-table-bg: var(--superficie);
+  --bs-table-color: var(--texto);
+  --bs-table-hover-bg: var(--hover);
+  --bs-table-hover-color: var(--texto);
+  --bs-table-border-color: var(--linha);
+  margin-bottom: 1rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--superficie);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+.tabela-prouesse > :not(caption) > * > * { padding: .6rem .75rem; border-bottom-width: 1px; }
+.tabela-prouesse thead th {
+  background: var(--marca-escura);
+  color: #fff;
+  font-weight: 600;
+  font-size: .9rem;
+  border-bottom: 0;
+  vertical-align: middle;
+  text-align: center;
+}
+.tabela-prouesse thead tr:nth-child(2) th { background: var(--cabecalho-2); font-weight: 500; }
+.tabela-prouesse thead tr:first-child th:first-child { border-top-left-radius: var(--raio); }
+.tabela-prouesse thead tr:first-child th:last-child  { border-top-right-radius: var(--raio); }
+.tabela-prouesse tbody tr:last-child td:first-child { border-bottom-left-radius: var(--raio); }
+.tabela-prouesse tbody tr:last-child td:last-child  { border-bottom-right-radius: var(--raio); }
+.tabela-prouesse tbody tr:last-child td { border-bottom: 0; }
+.tabela-prouesse tbody td { vertical-align: middle; }
+.tabela-prouesse td.ordem, .tabela-prouesse th.numeracao {
+  width: 3.2rem; text-align: center; color: var(--texto-suave); font-weight: 600;
+}
+.tabela-prouesse thead th.numeracao { color: #fff; }
+.tabela-prouesse td.professor { font-weight: 600; text-align: center; }
+.tabela-prouesse tbody td:first-child:not(.ordem) { border-left: 0; }
+thead.sticky-top { top: calc(var(--altura-nav) + var(--altura-subnav)); }
+
+/* Ícones de ajuda (i) dentro das tabelas */
+.aula_geminada_info, .n_max_flex_info { cursor: pointer; vertical-align: -.125em; opacity: .85; transition: opacity .15s, transform .15s; }
+svg.aula_geminada_info:hover, .n_max_flex_info:hover { opacity: 1; transform: scale(1.15); }
+.n_max_flex_info { color: var(--marca-media); }
+
+/* Aba "Dados iniciais": larguras */
+#aba1 .input_turmas td.b-excluir, #aba1 td:last-child { width: 3.4rem; text-align: center; }
+#aba1 .tabela-num-aulas td:last-child { width: auto; }
+
+/* Aba "Professores e turmas" (detalhes recolhíveis) */
+._details { margin: 0; width: 100%; }
+._details > summary {
+  display: inline-flex; align-items: center; gap: .4rem;
+  cursor: pointer; user-select: none;
+  padding: .35rem .85rem;
+  font-size: .9rem; font-weight: 500; color: var(--titulo);
+  background: var(--marca-clara);
+  border: 1px solid var(--pilula-borda);
+  border-radius: 999px;
+  list-style: none;
+  transition: background-color .15s;
+}
+._details > summary::-webkit-details-marker { display: none; }
+._details > summary::before {
+  content: ""; width: .45rem; height: .45rem;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg); transition: transform .2s;
+}
+._details[open] > summary::before { transform: rotate(45deg); }
+._details > summary:hover { background: var(--pilula-hover); }
+._details > summary:focus-visible { outline: 3px solid rgba(31, 111, 107, .35); outline-offset: 2px; }
+
+details[open] summary ~ * { animation: abertura .25s ease-out; }
+@keyframes abertura {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.detalhes {
+  margin-top: .6rem;
+  max-height: 14rem;
+  overflow: auto;
+  text-align: left;
+}
+.select_turmas {
+  background: var(--sup-alt);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  padding: .6rem .8rem;
+  line-height: 2;
+}
+.select_turmas .form-check-input, td .form-check-input { float: none; margin: 0 .45rem 0 0; vertical-align: middle; }
+.select_turmas label { cursor: pointer; vertical-align: middle; }
+td.aula_geminada { text-align: left; white-space: nowrap; padding-left: 2.5rem !important; }
+td:has(> details) { min-width: 15rem; text-align: center; }
+td:has(> details) > details > summary { margin-inline: auto; }
+td.aula_geminada > * { vertical-align: middle; }
+td.aula_geminada label { margin-right: .5rem; }
+.turmas_ch { background: transparent; }
+table.detalhes.turmas_ch { width: 100%; margin-top: .6rem; background: var(--sup-alt); border: 1px solid var(--borda); border-radius: var(--raio-pequeno); border-collapse: separate; }
+table.turmas_ch td { border: 0; padding: .35rem .5rem; vertical-align: middle; text-align: left; font-size: .9rem; }
+.turmas_ch_input { max-width: 5.5rem; min-width: 3.5rem; }
+.carga_horaria_igual { transform: scale(1.2); margin: 0 .4rem 0 0; }
+
+/* Aba "Horários não disponíveis" */
+.horarios_n_disp_por_dias_da_semana { font-size: .88rem; min-width: 10.5rem; white-space: nowrap; text-align: center; }
+.horarios_n_disp_por_dias_da_semana hr { margin: .45rem 0; opacity: .12; }
+.horarios_n_disp_por_dias_da_semana input[type="checkbox"] {
+  transform: scale(1.15);
+  margin: 0 .05rem 0 .4rem;
+  vertical-align: -.1em;
+}
+.horarios_n_disp_por_dias_da_semana input[type="checkbox"]:first-of-type { margin-left: 0; }
+/* V37: horários por aula (4 a 6) em colunas com o rótulo acima da caixa; efeito de destaque ao passar o mouse */
+.horarios_n_disp_por_dias_da_semana { white-space: normal; transition: transform .2s ease; }
+.horarios_n_disp_por_dias_da_semana:hover { transform: scale(1.2); z-index: 10; position: relative; }
+.hr_info_max_hnd { margin: 4px 0; }
+.checkbox-label-vertical {
+  display: inline-flex; flex-direction: column; align-items: center;
+  margin: .3em; cursor: pointer;
+}
+.checkbox-label-vertical span { order: -1; margin-bottom: .2em; font-size: .9em; }
+.horarios_n_disp_por_dias_da_semana .checkbox-label-vertical input[type="checkbox"] { transform: scale(1.25); margin: 0; vertical-align: baseline; }
+.link-aba { cursor: pointer; }
+.opcao input[type="radio"], td.opcao input { margin: 0; }
+input.n_dias_trab_por_semana, .n_max_aulas_dia { max-width: 9rem; margin-inline: auto; }
+td.opcao .form-control { margin-bottom: .4rem; }
+td.opcao .form-control:disabled, td.opcao .form-control[readonly] { background: var(--campo-desab); }
+
+/* ---------- Verificação de dados ---------- */
+.verificar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .75rem;
+  background: var(--superficie);
+  padding: 1rem 1.25rem;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+.verificar .btn, .verificar .form-control { margin: 0; }
+.verificar .form-control { width: auto; min-width: 14rem; }
+.gerar_configuracao { margin: 0; }
+.erros {
+  text-align: left;
+  background: var(--superficie);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  min-height: 6rem;
+  margin-top: 1.1rem;
+  padding: 1rem;
+  width: 100%;
+  animation: erro .35s ease-out;
+}
+.erros:empty { display: none; }
+@keyframes erro { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.erro_interno {
+  margin: 0 0 .75rem;
+  padding: .85rem 1rem;
+  border-left: 4px solid var(--perigo);
+  background: var(--perigo-claro);
+  color: var(--texto-erro);
+  border-radius: 0 var(--raio-pequeno) var(--raio-pequeno) 0;
+  animation: erro .5s ease-out;
+}
+.erro_interno ul { margin: .4rem 0 0; }
+.erro_interno.sucesso {
+  color: var(--sucesso-texto); background: var(--sucesso-claro); border-left-color: var(--sucesso);
+}
+.sucesso { color: var(--sucesso-texto); }
+
+/* ---------- Resultados (quadros de horários) ---------- */
+.aba6 { background: transparent; }
+.quadro_horarios_vazio {
+  max-width: 760px;
+  margin: 1.5rem auto;
+  padding: 1.25rem 1.5rem;
+  background: var(--superficie);
+  border-left: 4px solid var(--marca-media);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  color: var(--texto-suave);
+  text-align: left;
+}
+.t-horarios.row {
+  display: flex; flex-wrap: wrap; gap: 1.25rem;
+  margin: 0; padding: 1rem 1.5rem 0;
+}
+.t-horarios.row > div {
+  flex: 1 1 22rem; max-width: 100%;
+  background: var(--superficie);
+  padding: 0;
+  margin: 0;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+table.t-horarios {
+  width: 100%;
+  margin: 0;
+  font-size: .92rem;
+  border-collapse: collapse;
+  background: var(--superficie);
+}
+table.t-horarios thead tr:first-child th {
+  background: var(--marca-escura); color: #fff; font-size: 1rem; padding: .7rem; border: 0;
+}
+table.t-horarios thead tr:nth-child(2) th {
+  background: var(--marca-clara); color: var(--titulo); font-weight: 600; font-size: .82rem;
+  padding: .5rem .35rem; border: 0; border-bottom: 1px solid var(--borda);
+}
+table.t-horarios td { padding: .5rem .35rem; border: 0; border-bottom: 1px solid var(--linha); min-width: 0; max-width: none; }
+table.t-horarios tbody tr:nth-child(even) td { background: var(--zebra); }
+table.t-horarios tbody tr:hover td { background: var(--marca-clara); }
+table.t-horarios tbody tr:last-child td { border-bottom: 0; }
+table.t-horarios thead tr:nth-child(2) th:first-child { white-space: nowrap; }
+table.t-horarios td:first-child { font-weight: 600; color: var(--titulo); background: var(--col-primeira) !important; width: 3.5rem; }
+.t_cabacalho { color: #fff; }
+
+/* ---------- Salvar ---------- */
+.form_salvar {
+  background: var(--superficie);
+  padding: 1.5rem;
+  margin: 1.25rem auto;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  text-align: left;
+}
+.form_salvar > div:first-child { font-weight: 600; font-size: 1.1rem; }
+.form_salvar label { font-weight: 500; margin: .75rem 0 .35rem; }
+.form_salvar > .btn { margin-top: .9rem !important; }
+.form_salvar > div:last-child { line-height: 1.9; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--borda); color: var(--texto-suave); font-size: .92rem; }
+
+/* ---------- Janelas modais ---------- */
+.modal-content {
+  border: 0;
+  border-radius: calc(var(--raio) + 4px);
+  box-shadow: 0 20px 60px var(--cartao-sombra);
+  overflow: hidden;
+}
+.modal-header { border-bottom: 0; padding: 1.25rem 1.5rem .5rem; }
+.modal-title { font-weight: 700; color: var(--titulo); font-size: 1.25rem; }
+.modal-body { padding: .5rem 1.5rem 1.25rem; color: var(--texto); }
+.modal-footer { border-top: 0; background: var(--sup-alt); padding: .9rem 1.5rem; gap: .5rem; }
+.modal-footer:empty { display: none; }
+.modal-backdrop.show { opacity: .55; background: #0b2423; }
+
+/* ---------- Formulário de feedback ---------- */
+.required label::after { content: " *"; color: var(--perigo); }
+.form-group.required, #formulario_feedback .form-group {
+  padding: .75rem 1rem;
+  border: 1px solid transparent;
+  border-radius: var(--raio-pequeno);
+  transition: background-color .2s, border-color .2s;
+}
+.form-group > label { font-weight: 600; margin-bottom: .35rem; }
+.has-error { border: 1px solid var(--perigo) !important; background: var(--perigo-claro); }
+.alert { display: none; border-radius: var(--raio-pequeno); }
+#formulario_feedback input[type="checkbox"], #formulario_feedback input[type="radio"] { margin-right: .4rem; transform: scale(1.1); }
+
+/* ---------- Acessibilidade e telas pequenas ---------- */
+a:focus-visible, button:focus-visible, summary:focus-visible, .nav-link:focus-visible {
+  outline: 3px solid rgba(31, 111, 107, .4); outline-offset: 2px;
+}
+.nav-principal .nav-link:focus-visible { outline-color: var(--destaque); outline-offset: -3px; }
+
+@media (max-width: 1199.98px) {
+  /* Tabelas largas rolam na horizontal em telas estreitas; o cabeçalho deixa de ser fixo */
+  #aba1, #aba2, #aba3, #aba4 { overflow-x: auto; }
+  thead.sticky-top { position: static; }
+  #aba2 .tabela-prouesse { min-width: 920px; }
+  #aba3 .tabela-prouesse { min-width: 860px; }
+  #aba4 .tabela-prouesse { min-width: 1080px; }
+}
+@media (max-width: 991.98px) {
+  #aba1, #aba2, #aba3, #aba4 { padding: 1rem; }
+  #aba1 .tabela-prouesse { min-width: 520px; }
+  .t-horarios.row > div { overflow-x: auto; }
+  table.t-horarios { min-width: 440px; }
+}
+@media (max-width: 575.98px) {
+  .nav-principal::before { display: none; }
+  .btn-tema { order: -1; position: static; margin: 0 .6rem 0 0; }
+  .conteudo { margin: 1rem .75rem; }
+  .t-horarios.row { padding: .75rem .75rem 0; }
+  #aba5, #aba7 { padding: .75rem; }
+  .verificar .form-control { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+@media print {
+  body > nav, .menu-background { display: none; }
+}
+    </style>
+
+  </head>
+<body>
+
+
+<nav>
+  <div class="nav nav-tabs nav-principal" id="nav-tab" role="tablist">
+    <a class="nav-item nav-link active" id="inicio-tab" data-bs-toggle="tab" href="#nav-inicio" role="tab" aria-controls="nav-inicio" aria-selected="true" data-i18n="nav.apresentacao"></a>
+    <a class="nav-item nav-link" id="nav-como-utilizar-tab" data-bs-toggle="tab" href="#nav-como-utilizar" role="tab" aria-controls="nav-como-utilizar" aria-selected="false" data-i18n="nav.como_utilizar"></a>
+    <a class="nav-item nav-link" id="nav-gerar-tab" data-bs-toggle="tab" href="#nav-gerar" role="tab" aria-controls="nav-gerar" aria-selected="false" data-i18n="nav.gerar_configuracao"></a>
+    <a class="nav-item nav-link" id="nav-sobre-tab" data-bs-toggle="tab" href="#nav-sobre" role="tab" aria-controls="nav-sobre" aria-selected="false" data-i18n="nav.sobre"></a>
+    <button type="button" class="btn-tema" id="alternar_tema" aria-pressed="false" data-i18n-attr="title:tema.alternar;aria-label:tema.alternar">
+      <svg class="icone-lua" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="icone-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-inicio" role="tabpanel" aria-labelledby="nav-inicio-tab">
+      <div class="conteudo">
+        <h1 class="text-center" data-i18n-html="inicio.titulo"></h1>
+        <h4 data-i18n-html="inicio.apresentacao"></h4> 
+      </div>
+      <!-- <footer><b>Todos os direitos reservados</b></footer>-->
+  </div>
+  <div class="tab-pane fade" id="nav-como-utilizar" role="tabpanel" aria-labelledby="nav-como-utilizar-tab">
+    <div class="tab-content" id="nav-tabContent">
+    <div class="conteudo">
+      <h4 data-i18n-html="como_utilizar.texto"></h4>
+    </div>
+    <!-- <footer><b>Todos os direitos reservados</b></footer>-->
+  </div>
+</div>
+
+
+  
+
+  <!-- Início da página de geração de dados-->
+  <div class="tab-pane fade geracao_dados" id="nav-gerar" role="tabpanel" aria-labelledby="nav-gerar-tab">
+    <div>   
+      <nav >
+        <div class="nav nav-tabs menu-background" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="aba0-tab" data-bs-toggle="tab" href="#aba0" role="tab" aria-controls="aba0" aria-selected="true" data-i18n="aba.inicio"></a>
+          <a class="nav-item nav-link" id="aba1-tab" data-bs-toggle="tab" href="#aba1" role="tab" aria-controls="aba1" aria-selected="false" data-i18n="aba.dados_iniciais"></a>
+          <a class="nav-item nav-link" id="aba2-tab" data-bs-toggle="tab" href="#aba2" role="tab" aria-controls="aba2" aria-selected="false" data-i18n="aba.professores_turmas"></a>
+          <!-- <a class="nav-item nav-link" id="aba3-tab" data-bs-toggle="tab" href="#aba3" role="tab" aria-controls="aba3" aria-selected="false" data-i18n="aba.aulas_dia_semana"></a> -->
+          <a class="nav-item nav-link" id="aba4-tab" data-bs-toggle="tab" href="#aba4" role="tab" aria-controls="aba4" aria-selected="false" data-i18n="aba.horarios_nao_disponiveis"></a>
+          <a class="nav-item nav-link" id="aba5-tab" data-bs-toggle="tab" href="#aba5" role="tab" aria-controls="aba5" aria-selected="false" data-i18n="aba.verificacao_dados"></a>
+          <a class="nav-item nav-link" id="aba6-tab" data-bs-toggle="tab" href="#aba6" role="tab" aria-controls="aba6" aria-selected="false" data-i18n="aba.resultados"></a>
+          <a class="nav-item nav-link" id="aba7-tab" data-bs-toggle="tab" href="#aba7" role="tab" aria-controls="aba7" aria-selected="false" data-i18n="aba.salvar"></a>
+        </div>
+      </nav>
+    <div class="tab-content" id="nav-tabContent">
+
+  
+
+  <!-- Aba0 -->
+
+      <div class="tab-pane fade show active" id="aba0" role="tabpanel" aria-labelledby="aba0-tab">
+      <div class="conteudo">
+        <div>
+          <div data-i18n-html="aba0.pergunta"></div>
+          <div>
+            <button class="btn btn-success" id="novo"  data-i18n="aba0.btn_novo"></button>
+            <button class="btn btn-danger" id = "dados_restauracao" data-i18n="aba0.btn_restaurar"></button>
+            <button class="btn btn-primary" id = "dados_resultados" data-i18n="aba0.btn_exibir_resultados"></button>
+            <hr>
+          </div>
+          <div id = "restauracao_temp"></div>
+        </div>
+
+        <div id = "restaurar_opcao" class="externo desabilitado">
+          <div>
+            <label id="label_arquivo_restauracao" for="arquivo_restauracao_usuario" data-i18n="aba0.label_arquivo_restauracao"></label>
+            <input type="file" accept = ".json" class="form-control externo" id="arquivo_restauracao_usuario">
+            <hr>
+            <div><button class="btn btn-primary desabilitado" id="restaurar_ir" data-i18n="aba0.btn_restaurar_ir"></button></div>
+          </div> 
+          </div>
+
+        </div>
+     <!-- <footer><b>Todos os direitos reservados</b></footer>-->
+    </div>
+
+  <!-- Aba 1 -->
+    <div class="tab-pane fade show" id="aba1" role="tabpanel" aria-labelledby="aba1-tab">
+      <div class="container-fluid">
+        <div class="row">
+            
+            <!-- Coletandos nome dos professores-->
+            <div class="col-12 col-lg-8"> 
+              <table class="input_prof_disc text-center align-middle table table-hover tabela-prouesse">
+                <thead >
+                  <tr>
+                    <th class="" colspan="2" data-i18n="aba1.th_professores"></th>
+                    <th class=""colspan="2" data-i18n="aba1.th_disciplinas"></th>
+                  </tr>
+                </thead>
+                  <tbody class="table_pro_disc_turm">
+                  </tbody>
+              </table>
+            </div>
+                       
+            <div class="col-12 col-md-8 col-lg-4"> 
+              <div class="input_turmas">
+              <table class="input_turmas text-center align-middle table table-hover tabela-prouesse" value = "2">
+                <thead >
+                  <tr>
+                    <th colspan="2" data-i18n="aba1.th_turmas"></th>
+                  </tr>
+                </thead>
+                  <tbody class="input_turmas">
+
+                  </tbody>
+              </table>
+              </div>
+
+              <!-- Campo para Número de aulas por dia, por turma -->
+              <table class="tabela-num-aulas text-center align-middle table table-hover tabela-prouesse">
+                <thead >
+                  <tr>
+                    <th colspan="2" data-i18n="aba1.th_num_aulas_dia"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="2">
+                      <input type="number" class="form-control" id="num_aulas_por_dia_input" min="4" max="6" value="5" placeholder="" data-i18n-attr="placeholder:aba1.placeholder_num_aulas_dia">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>  
+
+  <!-- Aba 2 -->
+
+    <div class="tab-pane fade text-center" id="aba2" role="tabpanel" aria-labelledby="aba2-tab">
+        <!--É necessário inserir dados na aba "Dados iniciais".-->
+
+        <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 aba2_tabela_1">
+            </div> 
+
+        </div>
+      </div>
+    </div>  
+
+
+  <!-- Aba 3 -->
+      <div class="tab-pane fade text-center" id="aba3" role="tabpanel" aria-labelledby="aba3-tab" data-i18n="aba3.vazio"></div>
+
+  <!-- Aba 4 -->
+
+      <div class="tab-pane fade text-center" id="aba4" role="tabpanel" aria-labelledby="aba4-tab" data-i18n="aba4.vazio"></div>
+
+  <!-- Aba 5 -->
+
+      <div class="tab-pane fade text-center" id="aba5" role="tabpanel" aria-labelledby="aba5-tab">
+          
+          <div class="verificar">
+              <button id = "inconsistencia" type="button" class="btn btn-primary" data-i18n="aba5.btn_verificar"></button>
+              <input style="display: none;" type="text" id="nome_arquivo_config" class="gerar_configuracao form-control desabilitado" placeholder="" data-i18n-attr="placeholder:aba5.placeholder_nome_arquivo">
+              <button style="display: none;" id = "gerador_config" type="button" class="gerar_configuracao btn btn-success" data-i18n="aba5.btn_gerar_config"></button>
+          </div>
+
+        <div class="erros"></div>
+
+       </div>
+
+      <!-- Aba 6 -->
+      <div class="tab-pane fade text-center" id="aba6" role="tabpanel" aria-labelledby="aba6-tab">
+        <div>   
+          <nav >
+            <div class="nav nav-tabs menu-background" id="nav-tab" role="tablist">
+              <a class="nav-item nav-link active" id="aba6_1-tab" data-bs-toggle="tab" href="#aba6_1" role="tab" aria-controls="aba6_1" aria-selected="true" data-i18n="aba6.horarios_professor"></a>
+              <a class="nav-item nav-link" id="aba2-tab" data-bs-toggle="tab" href="#aba6_2" role="tab" aria-controls="aba6_2" aria-selected="false" data-i18n="aba6.horarios_turma_disciplinas"></a>
+              <a class="nav-item nav-link" id="aba3-tab" data-bs-toggle="tab" href="#aba6_3" role="tab" aria-controls="aba6_3" aria-selected="false" data-i18n="aba6.horarios_turma_professores"></a>
+              <a class="nav-item nav-link" id="aba6_4-tab" data-bs-toggle="tab" href="#aba6_4" role="tab" aria-controls="aba6_4" aria-selected="false" data-i18n="aba6.imprimir_quadro"></a>
+            </div>
+          </nav>
+          <div class="tab-content" id="nav-tabContent">
+
+          <!-- Aba 6_1 -->
+          <div class="tab-pane fade show active aba6" id="aba6_1" role="tabpanel" aria-labelledby="aba6_1-tab">
+            <div class="quadro_horarios_vazio" data-i18n="aba6.vazio_inicial"></div>
+          </div> 
+
+        <!-- Aba 6_2 -->
+          <div class="tab-pane fade text-center aba6" id="aba6_2" role="tabpanel" aria-labelledby="aba6_2-tab">
+            <div class="quadro_horarios_vazio" data-i18n="aba6.vazio_inicial"></div>
+          </div>
+
+
+        <!-- Aba 6_3 -->
+          <div class="tab-pane fade text-center aba6" id="aba6_3" role="tabpanel" aria-labelledby="aba6_3-tab">
+            <div class="quadro_horarios_vazio" data-i18n="aba6.vazio_inicial"></div>
+          </div>
+
+        <!-- Aba 6_4 -->
+          <div class="tab-pane fade text-center" id="aba6_4" role="tabpanel" aria-labelledby="aba6_4-tab">
+            <div class="quadro_horarios_vazio" data-i18n="aba6.vazio_inicial_imprimir"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- Aba 7 -->
+
+      <div class="tab-pane fade text-center" id="aba7" role="tabpanel" aria-labelledby="aba7-tab">
+        
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6 align-self-center form_salvar">
+                  <div style="margin-bottom: 2%" data-i18n="aba7.pergunta"></div>
+                  <div>
+                    <input type="text" id="nome_arquivo" class="form-control" placeholder="" data-i18n-attr="placeholder:aba7.placeholder_nome_arquivo">
+                  </div>
+                  <button style="margin-top: 2%" class="btn btn-success" id="salvar" data-i18n="aba7.btn_salvar"></button>
+                  <div data-i18n-html="aba7.recuperar"></div>
+                </div>
+              </div>
+            </div>
+
+
+      </div>
+
+  </div>
+</div>
+
+
+
+  </div>
+  <!-- Final página de geração de dados -->
+
+
+
+  <div class="tab-pane fade" id="nav-sobre" role="tabpanel" aria-labelledby="nav-sobre-tab">
+      <div class="conteudo">
+      
+      <h1 data-i18n="sobre.titulo_quem_somos"></h1>
+      <h4 data-i18n-html="sobre.quem_somos"></h4>
+        <h1 data-i18n="sobre.titulo_contato"></h1>
+      
+      <h4 data-i18n-html="sobre.contato"></h4>
+  </div>
+   <!-- <footer><b>Todos os direitos reservados</b></footer>-->
+  </div>
+
+</div>
+
+  <!-- The Modal -->
+  <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" id="myModal">
+  <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" >
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title" data-i18n="modal.titulo_alerta_padrao"></h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!-- Modal body -->
+        <div class="modal-body" id="modal">
+        </div>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+        </div>
+      </div>
+  </div>
+  </div>
+
+
+<!-- Formulário de feedback-->
+
+<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="formModalLabel"></h5>
+      </div>
+      <div class="modal-body">
+        <form id="formulario_feedback"></form>
+        <div class="alert alert-danger" id="alertMessage" data-i18n="feedback.alerta_obrigatorias"></div>
+      </div>
+      <div class="modal-footer"></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+/* =================================================================================
+   INÍCIO: INTERNACIONALIZAÇÃO (i18n) - idioma, dicionário de textos e funções t()/aplicar_idioma()
+   Este deve ser o PRIMEIRO script próprio da página. Para trocar de idioma, altere somente a
+   linha "const IDIOMA" abaixo ("pt" ou "en"). Todo texto visível da página vem do DICIONARIO.
+   ================================================================================= */
+// ---------- Configuração de idioma ----------
+// (Fica aqui, e não junto de "versao_prouesse", porque o idioma precisa existir antes de qualquer
+//  outro script: aplicar_idioma() roda logo abaixo, antes de os eventos serem registrados.)
+const IDIOMA = "pt"; // "pt" | "en"
+
+// Link do site do Prouesse: comum a todos os idiomas (usado nos textos como {url_site})
+const URL_SITE_PROUESSE = "http://prouesse.com.br/";
+
+// ---------- Dicionário de textos ----------
+// Observações:
+//  - Valores com HTML (tags, links, &nbsp;) são inseridos como HTML; os demais, como texto.
+//  - {nome} = parâmetro substituído em tempo de execução (ex.: {prof}); {aba.xxx} = texto de outra chave.
+//  - Se um valor de "en" for "" (vazio) ou a chave faltar, usa-se o texto de "pt".
+//  - Espaços/quebras de linha no início/fim de alguns valores reproduzem o HTML original (sem efeito visual).
+const DICIONARIO = {
+  pt: {
+    // ---- Textos gerais reutilizados em várias telas ----
+    "pagina.titulo": "",
+    "comum.professor": "Professor",
+    "comum.sim": "Sim",
+    "comum.nao": "Não",
+    "comum.fechar": "Fechar",
+    "comum.ok": "OK",
+    "comum.horario_1": "1º",
+    "comum.horario_2": "2º",
+    "comum.horario_3": "3º",
+    "comum.horario_4": "4º",
+    "comum.horario_5": "5º",
+    "comum.horario_6": "6º",
+
+    // ---- Dias da semana (nomes completos, usados em cabeçalhos de tabelas e quadros) ----
+    "dias.segunda": "Segunda-feira",
+    "dias.terca": "Terça-feira",
+    "dias.quarta": "Quarta-feira",
+    "dias.quinta": "Quinta-feira",
+    "dias.sexta": "Sexta-feira",
+    // Nomes curtos, usados nos quadros impressos com 3 ou 4 quadros por linha
+    "dias_abrev.segunda": "Seg",
+    "dias_abrev.terca": "Ter",
+    "dias_abrev.quarta": "Qua",
+    "dias_abrev.quinta": "Qui",
+    "dias_abrev.sexta": "Sex",
+
+    // ---- Dias da semana nas mensagens de inconsistência. Índice 0..4 = segunda..sexta. Forma 'ordinal' (ERRO 8) e forma 'a-Feira' (demais erros) ----
+    "dias.ord_ordinal.0": "2ª-feira",
+    "dias.ord_ordinal.1": "3ª-feira",
+    "dias.ord_ordinal.2": "4ª-feira",
+    "dias.ord_ordinal.3": "5ª-feira",
+    "dias.ord_ordinal.4": "6ª-feira",
+    "dias.ord_a.0": "2ª-Feira",
+    "dias.ord_a.1": "3ª-Feira",
+    "dias.ord_a.2": "4ª-Feira",
+    "dias.ord_a.3": "5ª-Feira",
+    "dias.ord_a.4": "6ª-Feira",
+    "dias.ord_ordinal_f.0": "2ª-Feira",
+    "dias.ord_ordinal_f.1": "3ª-Feira",
+    "dias.ord_ordinal_f.2": "4ª-Feira",
+    "dias.ord_ordinal_f.3": "5ª-Feira",
+    "dias.ord_ordinal_f.4": "6ª-Feira",
+
+    // ---- Barra superior de abas ----
+    "nav.apresentacao": "Apresentação",
+    "nav.como_utilizar": "Como utilizar",
+    "nav.gerar_configuracao": "Gerar configuração",
+    "nav.sobre": "Sobre",
+    "tema.alternar": "Alternar entre tema claro e escuro",
+
+    // ---- Aba Apresentação. ATENÇÃO: espaços e quebras de linha no início/fim de alguns valores reproduzem o HTML original (sem efeito visual); {url_site} = constante URL_SITE_PROUESSE (comum aos idiomas) ----
+    "inicio.titulo": "Bem-vindo ao <b>Prouesse</b>!",
+    "inicio.apresentacao": `
+          <p>
+            O Prouesse é um software para a geração de quadros de horários escolares. Com ele é possível gerar horários com as seguintes características:
+            <ul>
+              <li>Para cada professor, limitar o número máximo de aulas por dia da semana;</li>
+              <li>Limitar o número de dias de trabalho por semana, garantindo folgas;</li>
+              <li>Determinar horários não disponíveis por dia da semana, por professor;</li>
+              <li>Quadro de horários com 4, 5 ou 6 aulas por dia, por turma.</li>
+            </ul>
+          </p>
+          <p>
+            Não há garantias de que, para as restrições indicadas, o Prouesse encontrará os horários, mas esteja certo de que ele buscará encontrar uma solução.
+          </p>
+          <p>
+            Nesta página, navegando pela barra superior, é possível obter instruções de como utilizá-lo, gerar dados iniciais e restaurar a partir de dados anteriormente preenchidos.
+          </p>
+          <p>É necessário para o correto funcionamento do Prouesse ter o <a href="https://www.oracle.com/java/technologies/javase/jdk16-archive-downloads.html" target="_blank">Java 16</a> instalado em seu computador.</p>
+          <p>Você está utilizando a versão <span id = "versao_prouesse"></span> Acesse nosso site para obter versões mais atualizadas, se houver, em  <a href="{url_site}" target="_blank">{url_site}</a></p>
+         `,
+
+    // ---- Aba Como utilizar ----
+    "como_utilizar.texto": `Você pode acessar o manual do Prouesse juntamente com os arquivos baixados com esta página ou <a href="Manual_Prouesse.pdf" target="_blank">aqui</a> `,
+
+    // ---- Nomes das abas da área 'Gerar configuração' (também referenciados por {aba.xxx} em outras mensagens) ----
+    "aba.inicio": "Início",
+    "aba.dados_iniciais": "Dados iniciais",
+    "aba.professores_turmas": "Professores e turmas",
+    "aba.aulas_dia_semana": "Aulas por dia da semana",
+    "aba.horarios_nao_disponiveis": "Horários não disponíveis",
+    "aba.verificacao_dados": "Verificação de dados",
+    "aba.resultados": "Resultados",
+    "aba.salvar": "Salvar",
+
+    // ---- Aba Início (aba0) ----
+    "aba0.pergunta": "O que você deseja?<br>",
+    "aba0.btn_novo": "Gerar novos dados",
+    "aba0.btn_restaurar": "Restaurar dados",
+    "aba0.btn_exibir_resultados": "Exibir horários do Prouesse",
+    "aba0.label_arquivo_restauracao": "Selecione um arquivo com dados preenchidos",
+    "aba0.btn_restaurar_ir": "Restaurar",
+    "aba0.label_arquivo_resultados": "Selecione um arquivo de resultados de horários",
+
+    // ---- Aba Dados iniciais (aba1) ----
+    "aba1.th_professores": "Identificação dos professores",
+    "aba1.th_disciplinas": "Identificação das disciplinas (matérias)",
+    "aba1.th_turmas": "Identificação das turmas",
+    "aba1.th_num_aulas_dia": "Número de aulas por dia, por turma",
+    "aba1.placeholder_num_aulas_dia": "Ex: 5",
+    "aba1.placeholder_professor": "Insira um novo professor",
+    "aba1.placeholder_professor_nova_linha": "Insira um professor",
+    "aba1.placeholder_disciplina": "Insira uma nova disciplina",
+    "aba1.placeholder_turma": "Insira uma nova turma",
+
+    // ---- Sugestões de disciplinas (datalist). 'ens_relig' é usada na lista inicial, 'ensino_religioso' na lista de linhas adicionadas ----
+    "disciplinas.matematica": "Matemática",
+    "disciplinas.ingles": "Inglês",
+    "disciplinas.portugues": "Português",
+    "disciplinas.literatura": "Literatura",
+    "disciplinas.quimica": "Química",
+    "disciplinas.fisica": "Física",
+    "disciplinas.biologia": "Biologia",
+    "disciplinas.historia": "História",
+    "disciplinas.geografia": "Geografia",
+    "disciplinas.espanhol": "Espanhol",
+    "disciplinas.educacao_fisica": "Educação Física",
+    "disciplinas.musica": "Música",
+    "disciplinas.sociologia": "Sociologia",
+    "disciplinas.filosofia": "Filosofia",
+    "disciplinas.artes": "Artes",
+    "disciplinas.ens_relig": "Ens Relig",
+    "disciplinas.ensino_religioso": "Ensino Religioso",
+
+    // ---- Aba Professores e turmas (aba2) ----
+    "aba2.th_turmas": "Turmas",
+    "aba2.th_aulas_geminadas": "Aulas geminadas?",
+    "aba2.th_ch_igual": "A carga horária é igual para todas as turmas?",
+    "aba2.th_ch_turma": "Carga horária por turma na semana",
+    "aba2.resumo_selecione_turmas": "Selecione as turmas",
+    "aba2.resumo_ch_turmas": "Carga horária turmas",
+    "aba2.indiferente": "Indiferente",
+    "aba2.ch_turmas_celula": "Carga horárias das turmas",
+
+    // ---- Aba Aulas por dia da semana (aba3) ----
+    "aba3.vazio": ` 
+        É necessário inserir dados na aba "Número de aulas por turma".
+       `,
+    "aba3.th_opcao": "Qual opção será utilizada?",
+    "aba3.th_n_max_aulas": "Número máximo de aulas por dia da semana",
+    "aba3.opcao_1": "1ª",
+    "aba3.opcao_2": "2ª",
+    "aba3.placeholder_opcao_1": "1º opção",
+    "aba3.placeholder_opcao_2": "2º opção",
+
+    // ---- Aba Horários não disponíveis (aba4) ----
+    "aba4.vazio": `
+        
+      É necessário inserir dados na aba "{aba.professores_turmas}".
+      `,
+    "aba4.th_n_dias": "Número máximo de dias de trabalho por semana",
+    "aba4.th_hnd": "Horários não disponíveis | Número máximo de aulas por dia da semana",
+    "aba4.placeholder_n_max_aulas_dia": "Nº max. aulas no dia",
+    "aba4.title_n_max_aulas_dia": "Número máximo de aulas por dia da semana",
+    "aba4.placeholder_n_dias": "Nº de dias",
+    "aba4.n_max_hnd": "Nº max. HND:",
+
+    // ---- Aba Verificação de dados (aba5) ----
+    "aba5.btn_verificar": "Verificar inconsistências nas entradas de dados",
+    "aba5.placeholder_nome_arquivo": "Nome do arquivo",
+    "aba5.btn_gerar_config": "Gerar arquivo de configuração",
+
+    // ---- Aba Resultados (aba6) e quadros de horários ----
+    "aba6.horarios_professor": "Horários por professor",
+    "aba6.horarios_turma_disciplinas": "Horários por turma (disciplinas)",
+    "aba6.horarios_turma_professores": "Horários por turma (professores)",
+    "aba6.imprimir_quadro": "Imprimir quadro de horários",
+    "aba6.vazio_inicial": "É necessário preencher os dados, exportar em um arquivo (aba {aba.verificacao_dados}), importar do Prouesse.jar e processar. Ao encontrar uma solução, um arquivo será gerado e ele poderá ser importando para ser exibido nesta página.",
+    "aba6.vazio_inicial_imprimir": `É necessário preencher os dados, exportar em um arquivo (aba {aba.verificacao_dados}), importar do Prouesse.jar e processar. Ao encontrar uma solução, um arquivo será gerado e ele poderá ser importando para ser exibido nesta página.
+            `,
+    "aba6.vazio_pos_clique": "É necessário preencher os dados, exportar em um arquivo (aba {aba.verificacao_dados}), importar pelo Prouesse.jar e processar. Ao encontrar uma solução, um arquivo será gerado e ele poderá ser importado para ser exibido nesta página.",
+    "quadro.professor": "Professor: {professor}",
+    "quadro.turma": "Turma: {turma}",
+    "quadro.horario_dia": "Horário\\dia",
+    "imprimir.label_secao": "Seção de quadro para imprimir",
+    "imprimir.opcao_todas": "Todas as opções",
+    "imprimir.label_lado_a_lado": "Número de quadros lado a lado",
+    "imprimir.btn_imprimir": "Imprimir",
+    "imprimir.titulo_janela": "Quadro de horários gerados por Prouesse",
+    "imprimir.label_orientacao": "Orientação da página",
+    "imprimir.retrato": "Retrato",
+    "imprimir.paisagem": "Paisagem",
+
+    // ---- Aba Salvar (aba7) e arquivo exportado ----
+    "aba7.pergunta": `
+                    Deseja salvar os dados preenchidos?
+                  `,
+    "aba7.placeholder_nome_arquivo": "Nome do arquivo",
+    "aba7.btn_salvar": "Salvar",
+    "aba7.recuperar": `
+                    Você poderá, posteriormente, recuperar na aba <button id="ir_inicio" type="button" class="btn btn-info btn-sm">{aba.inicio}</button> os dados já preenchidos ao selecionar o arquivo que será exportado.
+                  `,
+    "arquivo.nome_padrao": "dados_iniciais",
+
+    // ---- Aba Sobre ----
+    "sobre.titulo_quem_somos": "Quem somos",
+    "sobre.quem_somos": `
+      <p>O Prouesse é um software que vem sendo desenvolvido desde 2005.</p>
+      <p> Ele é fruto de um esforço individual para o desenvolvimento de um algoritmo que leva em consideração diversas restrições que são importantes do ponto de vista prático para a geração de horários escolares.</p>
+      <p>Em 2020, ganhou uma interface nova construída em HTML com a finalidade de facilitar o preenchimento dos dados de entrada para a geração de horários.</p>
+        <p>A nossa determinação foi o principal fator no desenvolvimento do Prouesse.</p>
+        <p>Esperamos que sejam gerados quadros de horários satisfatórios.</p>
+        <p> O Prouesse está licenciado sobre os termos da <a href="http://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL v3</a>. Veja mais detalhes sobre o código do software no <a href="https://sourceforge.net/projects/prouesse/" target="_blank">Sourceforge.</a> </p>
+      `,
+    "sobre.titulo_contato": "Entre em contato",
+    "sobre.contato": `
+        <p>Entre em contato conosco para informar erros, sugerir melhorias e externar elogios por meio do e-mail 
+  <a href="mailto:raimundo.leite@ufop.edu.br">raimundo.leite@ufop.edu.br</a></p>
+    
+    `,
+
+    // ---- Janela modal (alertas, avisos) ----
+    "modal.titulo_alerta_padrao": "Alerta :(",
+    "modal.titulo_alerta": "Alerta",
+    "modal.titulo_alerta_3x": "Alerta!!!",
+    "modal.titulo_alerta_triste": "Alerta!!! :(",
+    "modal.btn_nao_salvar_prosseguir": "Não salvar e prosseguir",
+    "modal.restauracao.dados_existentes": "Existem dados já preenchidos na página. O que deseja fazer?",
+    "modal.restauracao.btn_salvar_atuais": "Salvar os dados atuais",
+    "modal.restauracao.dados_ja_salvos": "Você já salvou os dados preenchidos na página. O que deseja fazer?",
+    "modal.restauracao.btn_salvar_novamente": "Salvar os dados novamente",
+    "modal.sucesso.titulo": "Sucesso!!!",
+    "modal.sucesso.mensagem": "Dados importados com sucesso!!!",
+    "modal.sucesso.btn_ir_para": "Ir para {destino}",
+    "modal.sucesso.destino_inicio": "início",
+    "modal.sucesso.destino_quadro": "quadro de horários",
+    "modal.nome_duplicado.professor": "Você adicionou um professor  com mesmo nome.",
+    "modal.nome_duplicado.turma": "Você adicionou uma turma  com mesmo nome.",
+    "modal.nome_duplicado.btn_corrigir_este": "Corrigir neste campo",
+    "modal.nome_duplicado.btn_corrigir_anterior": "Corrigir no campo anterior",
+    "modal.turma_disc_repetida.mensagem": `Você adicionou para a turma "{turma}" disciplinas iguais ({disciplina}) referentes aos seguintes professores:<br>{professores}`,
+    "modal.alteracao_nome_professor.mensagem": "Você fez uma alteração no nome de algum professor. Essa alteração ocasiona a perda dos dados anteriormente preenchidos para o professor com o nome alterado.",
+    "modal.aula_geminada.titulo": "Aula geminada",
+    "modal.aula_geminada.mensagem": "Se refere às aulas alocadas consecutivamente para uma mesma turma em um dia",
+    "modal.n_max_hnd.titulo": "Máximo de horários não disponíveis",
+    "modal.n_max_hnd.mensagem": `Você está restaurando os dados anteriormente preenchidos. Agora eles possuem uma distribuição de aulas. É possível determinar para cada professor horários não disponíveis em quantidade de no máximo "Nº Max. HnD". Isso significa que é possível indicar para cada professor, para cada dia, o número de horários não disponíveis informado, sem que haja comprometimento da solução encontrada (solução/distribuição que foi o resultado do primeiro passo na execução do Prouesse). Caso seja designado um número de horários não disponíveis maior que o informado para algum dia e professor, o Prouesse terá de refazer a primeira fase para a obtenção da solução para os dados indicados.`,
+    "modal.n_max_hnd.mais_de_um": "No caso deste professor e deste dia, é possível selecionar até {valor} horários não disponíveis sem perder a solução encontrada.",
+    "modal.n_max_hnd.um": "No caso deste professor e deste dia, é possível selecionar até um horário não disponível sem perder a solução encontrada.",
+    "modal.n_max_hnd.zero": "No caso deste professor e deste dia, não é possível selecionar horário não disponível sem perder a solução encontrada.",
+    "modal.nova_versao.titulo": "Nova versão do Prouesse disponível",
+    "modal.nova_versao.mensagem": `<span>Existe uma nova versão do Prouesse disponível. Acesse <a href="{url_site}" target="_blank">prouesse.com.br.</a> para baixá-la.`,
+
+    // ---- Mensagens da verificação de dados (campos obrigatórios / abas não visitadas). {aba.xxx} = nome da aba ----
+    "erro.preencher_dados_iniciais": `ERRO: É necessário preencher algum dado na <a href="#" class="link-aba" data-aba="aba1-tab">aba "{aba.dados_iniciais}"</a>.`,
+    "erro.passar_pela_aba": `ERRO: É necessário passar pela <a href="#" class="link-aba" data-aba="{aba_id}">aba "{aba}"</a>.`,
+    "erro.sucesso": "Sucesso: Dados sem inconsistências!!!<br> Agora é possível gerar o arquivo de configuração.",
+    "erro.req_turmas.singular": `ERRO: É necessário selecionar turmas ({link}) para o seguinte professor:`,
+    "erro.req_turmas.plural": `ERRO: É necessário selecionar turmas ({link}) para os seguintes professores:`,
+    "erro.req_ch.singular": `ERRO: É necessário indicar a carga horária de turma(s) ({link}) para o seguinte professor:`,
+    "erro.req_ch.plural": `ERRO: É necessário indicar a carga horária de turma(s) ({link}) para os seguintes professores:`,
+    "erro.req_opcao_n_max_aulas.singular": `ERRO: É necessário indicar qual a opção de número máximo de aulas por dia semana será utilizada ({link}) para o seguinte professor:`,
+    "erro.req_opcao_n_max_aulas.plural": `ERRO: É necessário indicar qual a opção de número máximo de aulas por dia semana será utilizada ({link}) para os seguintes professores:`,
+    "erro.req_n_max_aula_por_dia_semana.singular": `ERRO: É necessário indicar qual o número máximo de aulas por dia semana ({link}) para o seguinte professor:`,
+    "erro.req_n_max_aula_por_dia_semana.plural": `ERRO: É necessário indicar qual o número máximo de aulas por dia semana ({link}) para os seguintes professores:`,
+    "erro.req_n_dias_trab_por_sem.singular": `ERRO: É necessário indicar qual o número de dias de trabalho por semana ({link}) para o seguinte professor:`,
+    "erro.req_n_dias_trab_por_sem.plural": `ERRO: É necessário indicar qual o número de dias de trabalho por semana ({link}) para os seguintes professores:`,
+
+    // ---- Testes de consistência dos dados. Parâmetros: {prof} {turma} {dia} {n} {horario} ----
+    "consistencia.erro1": "ERRO 1: Não foram informadas as turmas do prof. {prof}.",
+    "consistencia.erro2": "ERRO 2: Foi informado que prof. {prof} deve ter aulas geminadas; porém, também foi informado que o mesmo não deve ter mais de uma aula em nenhum dia.",
+    "consistencia.erro3": "ERRO 3: Foi informado que prof. {prof} não deve ter aulas geminadas; porém, também foi informado que o mesmo deve comparecer um único dia da semana.",
+    "consistencia.erro4": "ERRO 4: Foi informado que prof. {prof} deve ter aulas geminadas; porém, a carga horária numa de suas turmas é de 1 aula por semana.",
+    "consistencia.erro5": "ERRO 5: Foi informado o número máximo de aulas por dia do prof. {prof}, porém os valores informados para esse prof. são insuficientes para que o mesmo possa cumprir sua carga horária semanal.",
+    "consistencia.erro6": "ERRO 6: O número máximo de dias em trabalho informado para o prof. {prof} é insuficiente para que o mesmo possa cumprir sua carga horária.",
+    "consistencia.erro7": "ERRO 7: A soma das cargas horárias das disciplinas da turma {turma} não coincide com o total de aulas assistidas durante a semana por cada turma.",
+    "consistencia.erro8": "ERRO 8: Foi informado o número máximo de aulas na {dia} de cada professor, porém os valores informados são insuficientes para atender a todas as turmas.",
+    "consistencia.erro9": "ERRO 9: {n} é o número de profs. disponíveis na {dia}, no horário {horario}, número insuficiente para atender a todas as turmas nesse horário.",
+    "consistencia.erro10": "ERRO 10: O número máximo de aulas que foi informado para o prof. {prof} na {dia} é maior que o número de horários disponíveis do mesmo prof. no mesmo dia.",
+    "consistencia.erro_muitas_aulas": "ERRO: Foi informado para o prof. {prof} na {dia} um número máximo de aulas muito alto, considerando que esse prof. tem apenas {n} turma(s).",
+    "consistencia.erro_muitas_aulas_sem_geminada": "ERRO: Foi informado para o prof. {prof} na {dia} um número máximo de aulas muito alto, considerando que esse prof. tem apenas {n} turma(s) e foi informado que o mesmo não pretende ter aula geminada.",
+    "consistencia.erro11": "ERRO 11: O número máximo de dias em trabalho informado para o prof. {prof} não está correto, considerando-se o número de dias para os quais não devem haver aulas deste professor.",
+    "consistencia.erro12": "ERRO 12: O prof. {prof} não frequenta um número de dias suficiente, considerando-se que foi informado que este prof. não deverá ter aulas geminadas.",
+    "consistencia.erro13": "ERRO 13: O prof. {prof} não frequenta um número de dias suficiente para atender a turma {turma}.",
+
+    // ---- Formulário de feedback (hoje desativado na chamada, mas mantido) ----
+    "feedback.alerta_obrigatorias": `
+          Por favor, preencha todas as perguntas obrigatórias.
+        `,
+    "feedback.titulo": "Seu feedback é importante para nós. O que está achando do Prouesse?",
+    "feedback.p1.pergunta": "1 - Que tipo de dado achou mais fácil de inserir?",
+    "feedback.opcao_dados_iniciais": "Aba {aba.dados_iniciais}",
+    "feedback.opcao_professores_turmas": "Aba {aba.professores_turmas}",
+    "feedback.opcao_aulas_dia_semana": "Aba {aba.aulas_dia_semana}",
+    "feedback.opcao_horarios_nao_disponiveis": "Aba {aba.horarios_nao_disponiveis}",
+    "feedback.p2.pergunta": "2 - Que tipo de dado achou mais difícil de inserir?",
+    "feedback.p3.pergunta": "3 - O que achou da facilidade de uso da interface?",
+    "feedback.p3.facil": "Fácil",
+    "feedback.p3.dificil": "Difícil",
+    "feedback.p4.pergunta": "4 - Leu o manual?",
+    "feedback.p5.pergunta": "5 - O que achou do manual?",
+    "feedback.p5.facil": "Fácil de entender",
+    "feedback.p5.dificil": "Difícil de entender",
+    "feedback.p6.pergunta": "6 - Comentários adicionais (opcional):",
+    "feedback.btn_enviar": "Enviar",
+  },
+
+  en: {
+    // ---- Textos gerais reutilizados em várias telas ----
+    "pagina.titulo": "Prouesse - Configuration Page",
+    "comum.professor": "Teacher",
+    "comum.sim": "Yes",
+    "comum.nao": "No",
+    "comum.fechar": "Close",
+    "comum.ok": "OK",
+    "comum.horario_1": "1st",
+    "comum.horario_2": "2nd",
+    "comum.horario_3": "3rd",
+    "comum.horario_4": "4th",
+    "comum.horario_5": "5th",
+    "comum.horario_6": "6th",
+
+    // ---- Dias da semana (nomes completos, usados em cabeçalhos de tabelas e quadros) ----
+    "dias.segunda": "Monday",
+    "dias.terca": "Tuesday",
+    "dias.quarta": "Wednesday",
+    "dias.quinta": "Thursday",
+    "dias.sexta": "Friday",
+    "dias_abrev.segunda": "Mon",
+    "dias_abrev.terca": "Tue",
+    "dias_abrev.quarta": "Wed",
+    "dias_abrev.quinta": "Thu",
+    "dias_abrev.sexta": "Fri",
+
+    // ---- Dias da semana nas mensagens de inconsistência. Índice 0..4 = segunda..sexta. Forma 'ordinal' (ERRO 8) e forma 'a-Feira' (demais erros) ----
+    "dias.ord_ordinal.0": "Monday",
+    "dias.ord_ordinal.1": "Tuesday",
+    "dias.ord_ordinal.2": "Wednesday",
+    "dias.ord_ordinal.3": "Thursday",
+    "dias.ord_ordinal.4": "Friday",
+    "dias.ord_a.0": "Monday",
+    "dias.ord_a.1": "Tuesday",
+    "dias.ord_a.2": "Wednesday",
+    "dias.ord_a.3": "Thursday",
+    "dias.ord_a.4": "Friday",
+    "dias.ord_ordinal_f.0": "Monday",
+    "dias.ord_ordinal_f.1": "Tuesday",
+    "dias.ord_ordinal_f.2": "Wednesday",
+    "dias.ord_ordinal_f.3": "Thursday",
+    "dias.ord_ordinal_f.4": "Friday",
+
+    // ---- Barra superior de abas ----
+    "nav.apresentacao": "Introduction",
+    "nav.como_utilizar": "How to use",
+    "nav.gerar_configuracao": "Generate configuration",
+    "nav.sobre": "About",
+    "tema.alternar": "Switch between light and dark theme",
+
+    // ---- Aba Apresentação. ATENÇÃO: espaços e quebras de linha no início/fim de alguns valores reproduzem o HTML original (sem efeito visual); {url_site} = constante URL_SITE_PROUESSE (comum aos idiomas) ----
+    "inicio.titulo": "Welcome to <b>Prouesse</b>!",
+    "inicio.apresentacao": "\n          <p>\n            Prouesse is software for generating school timetables. With it you can generate timetables with the following characteristics:\n            <ul>\n              <li>For each teacher, limit the number of lessons per day of the week;</li>\n              <li>Limit the number of working days per week, guaranteeing days off;</li>\n              <li>Set unavailable periods by day of the week, for each teacher;</li>\n              <li>Timetable with 4, 5 or 6 lessons per day, per class.</li>\n            </ul>\n          </p>\n          <p>\n            There is no guarantee that Prouesse will find a timetable for the constraints you specify, but rest assured that it will do its best to find a solution.\n          </p>\n          <p>\n            On this page, using the top navigation bar, you can find instructions on how to use Prouesse, generate initial data and restore data you have previously entered.\n          </p>\n          <p>For Prouesse to work correctly, <a href=\"https://www.oracle.com/java/technologies/javase/jdk16-archive-downloads.html\" target=\"_blank\">Java 16</a> must be installed on your computer.</p>\n          <p>You are using version <span id = \"versao_prouesse\"></span> Visit our website to get newer versions, if any, at  <a href=\"{url_site}\" target=\"_blank\">{url_site}</a></p>\n         ",
+
+    // ---- Aba Como utilizar ----
+    "como_utilizar.texto": "You can find the Prouesse manual among the files downloaded with this page, or <a href=\"Manual_Prouesse.pdf\" target=\"_blank\">here</a> ",
+
+    // ---- Nomes das abas da área 'Gerar configuração' (também referenciados por {aba.xxx} em outras mensagens) ----
+    "aba.inicio": "Start",
+    "aba.dados_iniciais": "Initial data",
+    "aba.professores_turmas": "Teachers and classes",
+    "aba.aulas_dia_semana": "Lessons per day of the week",
+    "aba.horarios_nao_disponiveis": "Unavailable periods",
+    "aba.verificacao_dados": "Data verification",
+    "aba.resultados": "Results",
+    "aba.salvar": "Save",
+
+    // ---- Aba Início (aba0) ----
+    "aba0.pergunta": "What would you like to do?<br>",
+    "aba0.btn_novo": "Generate new data",
+    "aba0.btn_restaurar": "Restore data",
+    "aba0.btn_exibir_resultados": "Display Prouesse timetables",
+    "aba0.label_arquivo_restauracao": "Select a file with previously entered data",
+    "aba0.btn_restaurar_ir": "Restore",
+    "aba0.label_arquivo_resultados": "Select a timetable results file",
+
+    // ---- Aba Dados iniciais (aba1) ----
+    "aba1.th_professores": "Teacher identification",
+    "aba1.th_disciplinas": "Subject identification",
+    "aba1.th_turmas": "Class identification",
+    "aba1.th_num_aulas_dia": "Number of lessons per day, per class",
+    "aba1.placeholder_num_aulas_dia": "e.g. 5",
+    "aba1.placeholder_professor": "Enter a new teacher",
+    "aba1.placeholder_professor_nova_linha": "Enter a teacher",
+    "aba1.placeholder_disciplina": "Enter a new subject",
+    "aba1.placeholder_turma": "Enter a new class",
+
+    // ---- Sugestões de disciplinas (datalist). 'ens_relig' é usada na lista inicial, 'ensino_religioso' na lista de linhas adicionadas ----
+    "disciplinas.matematica": "Mathematics",
+    "disciplinas.ingles": "English",
+    "disciplinas.portugues": "Portuguese",
+    "disciplinas.literatura": "Literature",
+    "disciplinas.quimica": "Chemistry",
+    "disciplinas.fisica": "Physics",
+    "disciplinas.biologia": "Biology",
+    "disciplinas.historia": "History",
+    "disciplinas.geografia": "Geography",
+    "disciplinas.espanhol": "Spanish",
+    "disciplinas.educacao_fisica": "Physical Education",
+    "disciplinas.musica": "Music",
+    "disciplinas.sociologia": "Sociology",
+    "disciplinas.filosofia": "Philosophy",
+    "disciplinas.artes": "Arts",
+    "disciplinas.ens_relig": "Relig Ed",
+    "disciplinas.ensino_religioso": "Religious Education",
+
+    // ---- Aba Professores e turmas (aba2) ----
+    "aba2.th_turmas": "Classes",
+    "aba2.th_aulas_geminadas": "Double periods?",
+    "aba2.th_ch_igual": "Is the teaching load the same for all classes?",
+    "aba2.th_ch_turma": "Weekly teaching load per class",
+    "aba2.resumo_selecione_turmas": "Select the classes",
+    "aba2.resumo_ch_turmas": "Teaching load of classes",
+    "aba2.indiferente": "No preference",
+    "aba2.ch_turmas_celula": "Teaching load of the classes",
+
+    // ---- Aba Aulas por dia da semana (aba3) ----
+    "aba3.vazio": " \n        You must enter data in the tab \"Number of lessons per class\".\n       ",
+    "aba3.th_opcao": "Which option will be used?",
+    "aba3.th_n_max_aulas": "Maximum number of lessons per day of the week",
+    "aba3.opcao_1": "1st",
+    "aba3.opcao_2": "2nd",
+    "aba3.placeholder_opcao_1": "1st option",
+    "aba3.placeholder_opcao_2": "2nd option",
+
+    // ---- Aba Horários não disponíveis (aba4) ----
+    "aba4.vazio": "\n        \n      You must enter data in the tab \"{aba.professores_turmas}\".\n      ",
+    "aba4.th_n_dias": "Maximum number of working days per week",
+    "aba4.th_hnd": "Unavailable periods | Maximum number of lessons per day of the week",
+    "aba4.placeholder_n_max_aulas_dia": "Max. lessons per day",
+    "aba4.title_n_max_aulas_dia": "Maximum number of lessons per day of the week",
+    "aba4.placeholder_n_dias": "No. of days",
+    "aba4.n_max_hnd": "Max. unavailable periods:",
+
+    // ---- Aba Verificação de dados (aba5) ----
+    "aba5.btn_verificar": "Check the data entries for inconsistencies",
+    "aba5.placeholder_nome_arquivo": "File name",
+    "aba5.btn_gerar_config": "Generate configuration file",
+
+    // ---- Aba Resultados (aba6) e quadros de horários ----
+    "aba6.horarios_professor": "Timetables by teacher",
+    "aba6.horarios_turma_disciplinas": "Timetables by class (subjects)",
+    "aba6.horarios_turma_professores": "Timetables by class (teachers)",
+    "aba6.imprimir_quadro": "Print timetable",
+    "aba6.vazio_inicial": "You must enter the data, export it to a file (tab {aba.verificacao_dados}), import it into Prouesse.jar and process it. When a solution is found, a file will be generated, and it can be imported to be displayed on this page.",
+    "aba6.vazio_inicial_imprimir": "You must enter the data, export it to a file (tab {aba.verificacao_dados}), import it into Prouesse.jar and process it. When a solution is found, a file will be generated, and it can be imported to be displayed on this page.\n            ",
+    "aba6.vazio_pos_clique": "You must enter the data, export it to a file (tab {aba.verificacao_dados}), import it into Prouesse.jar and process it. When a solution is found, a file will be generated, and it can be imported to be displayed on this page.",
+    "quadro.professor": "Teacher: {professor}",
+    "quadro.turma": "Class: {turma}",
+    "quadro.horario_dia": "Period\\day",
+    "imprimir.label_secao": "Timetable section to print",
+    "imprimir.opcao_todas": "All options",
+    "imprimir.label_lado_a_lado": "Number of timetables side by side",
+    "imprimir.btn_imprimir": "Print",
+    "imprimir.titulo_janela": "Timetables generated by Prouesse",
+    "imprimir.label_orientacao": "Page orientation",
+    "imprimir.retrato": "Portrait",
+    "imprimir.paisagem": "Landscape",
+
+    // ---- Aba Salvar (aba7) e arquivo exportado ----
+    "aba7.pergunta": "\n                    Do you want to save the data you have entered?\n                  ",
+    "aba7.placeholder_nome_arquivo": "File name",
+    "aba7.btn_salvar": "Save",
+    "aba7.recuperar": "\n                    Later, in the tab <button id=\"ir_inicio\" type=\"button\" class=\"btn btn-info btn-sm\">{aba.inicio}</button> you can recover the data you have already entered by selecting the file that will be exported.\n                  ",
+    "arquivo.nome_padrao": "initial_data",
+
+    // ---- Aba Sobre ----
+    "sobre.titulo_quem_somos": "Who we are",
+    "sobre.quem_somos": "\n      <p>Prouesse is software that has been under development since 2005.</p>\n      <p> It is the result of an individual effort to develop an algorithm that takes into account several constraints that matter in practice when generating school timetables.</p>\n      <p>In 2020, it gained a new interface built in HTML, in order to make it easier to enter the input data for generating timetables.</p>\n        <p>Our determination was the main factor in the development of Prouesse.</p>\n        <p>We hope that it generates satisfactory timetables for you.</p>\n        <p> Prouesse is licensed under the terms of the <a href=\"http://www.gnu.org/licenses/gpl-3.0.html\" target=\"_blank\">GPL v3</a> (GNU General Public License, version 3). See more details about the software's source code on <a href=\"https://sourceforge.net/projects/prouesse/\" target=\"_blank\">SourceForge.</a> </p>\n      ",
+    "sobre.titulo_contato": "Contact us",
+    "sobre.contato": "\n        <p>Contact us to report errors, suggest improvements and share your feedback by email at \n  <a href=\"mailto:raimundo.leite@ufop.edu.br\">raimundo.leite@ufop.edu.br</a></p>\n    \n    ",
+
+    // ---- Janela modal (alertas, avisos) ----
+    "modal.titulo_alerta_padrao": "Alert :(",
+    "modal.titulo_alerta": "Alert",
+    "modal.titulo_alerta_3x": "Alert!!!",
+    "modal.titulo_alerta_triste": "Alert!!! :(",
+    "modal.btn_nao_salvar_prosseguir": "Don't save and proceed",
+    "modal.restauracao.dados_existentes": "There is data already entered on the page. What would you like to do?",
+    "modal.restauracao.btn_salvar_atuais": "Save the current data",
+    "modal.restauracao.dados_ja_salvos": "You have already saved the data entered on the page. What would you like to do?",
+    "modal.restauracao.btn_salvar_novamente": "Save the data again",
+    "modal.sucesso.titulo": "Success!!!",
+    "modal.sucesso.mensagem": "Data imported successfully!!!",
+    "modal.sucesso.btn_ir_para": "Go to {destino}",
+    "modal.sucesso.destino_inicio": "the Start tab",
+    "modal.sucesso.destino_quadro": "the timetable",
+    "modal.nome_duplicado.professor": "You added a teacher with the same name.",
+    "modal.nome_duplicado.turma": "You added a class with the same name.",
+    "modal.nome_duplicado.btn_corrigir_este": "Fix in this field",
+    "modal.nome_duplicado.btn_corrigir_anterior": "Fix in the previous field",
+    "modal.turma_disc_repetida.mensagem": "For the class \"{turma}\" you added identical subjects ({disciplina}) for the following teachers:<br>{professores}",
+    "modal.alteracao_nome_professor.mensagem": "You changed the name of a teacher. This change causes the loss of the data previously entered for the teacher whose name was changed.",
+    "modal.aula_geminada.titulo": "Double period",
+    "modal.aula_geminada.mensagem": "Refers to lessons scheduled consecutively for the same class on one day",
+    "modal.n_max_hnd.titulo": "Maximum unavailable periods",
+    "modal.n_max_hnd.mensagem": "You are restoring previously entered data. It now includes a distribution of lessons. For each teacher, you can set unavailable periods up to a maximum of \"Max. unavailable periods\". This means that, for each teacher and each day, you can specify that number of unavailable periods without compromising the solution found (the solution/distribution that resulted from the first step of running Prouesse). If you assign more unavailable periods than the number shown for any day and teacher, Prouesse will have to redo the First Phase to obtain a solution for the data provided.",
+    "modal.n_max_hnd.mais_de_um": "For this teacher and this day, you can select up to {valor} unavailable periods without losing the solution found.",
+    "modal.n_max_hnd.um": "For this teacher and this day, you can select up to one unavailable period without losing the solution found.",
+    "modal.n_max_hnd.zero": "For this teacher and this day, you cannot select any unavailable period without losing the solution found.",
+    "modal.nova_versao.titulo": "New version of Prouesse available",
+    "modal.nova_versao.mensagem": "<span>A new version of Prouesse is available. Visit <a href=\"{url_site}\" target=\"_blank\">prouesse.com.br.</a> to download it.",
+
+    // ---- Mensagens da verificação de dados (campos obrigatórios / abas não visitadas). {aba.xxx} = nome da aba ----
+    "erro.preencher_dados_iniciais": "ERROR: You must enter some data in the <a href=\"#\" class=\"link-aba\" data-aba=\"aba1-tab\">tab \"{aba.dados_iniciais}\"</a>.",
+    "erro.passar_pela_aba": "ERROR: You must go through the <a href=\"#\" class=\"link-aba\" data-aba=\"{aba_id}\">tab \"{aba}\"</a>.",
+    "erro.sucesso": "Success: No inconsistencies in the data!!!<br> You can now generate the configuration file.",
+    "erro.req_turmas.singular": "ERROR: You must select classes ({link}) for the following teacher:",
+    "erro.req_turmas.plural": "ERROR: You must select classes ({link}) for the following teachers:",
+    "erro.req_ch.singular": "ERROR: You must specify the teaching load of the class(es) ({link}) for the following teacher:",
+    "erro.req_ch.plural": "ERROR: You must specify the teaching load of the class(es) ({link}) for the following teachers:",
+    "erro.req_opcao_n_max_aulas.singular": "ERROR: You must indicate which option for the maximum number of lessons per day of the week will be used ({link}) for the following teacher:",
+    "erro.req_opcao_n_max_aulas.plural": "ERROR: You must indicate which option for the maximum number of lessons per day of the week will be used ({link}) for the following teachers:",
+    "erro.req_n_max_aula_por_dia_semana.singular": "ERROR: You must specify the maximum number of lessons per day of the week ({link}) for the following teacher:",
+    "erro.req_n_max_aula_por_dia_semana.plural": "ERROR: You must specify the maximum number of lessons per day of the week ({link}) for the following teachers:",
+    "erro.req_n_dias_trab_por_sem.singular": "ERROR: You must specify the number of working days per week ({link}) for the following teacher:",
+    "erro.req_n_dias_trab_por_sem.plural": "ERROR: You must specify the number of working days per week ({link}) for the following teachers:",
+
+    // ---- Testes de consistência dos dados. Parâmetros: {prof} {turma} {dia} {n} {horario} ----
+    "consistencia.erro1": "ERROR 1: No classes were specified for Teacher {prof}.",
+    "consistencia.erro2": "ERROR 2: It was specified that Teacher {prof} must have double periods; however, it was also specified that they must not have more than one lesson on any day.",
+    "consistencia.erro3": "ERROR 3: It was specified that Teacher {prof} must not have double periods; however, it was also specified that they must attend on a single day of the week.",
+    "consistencia.erro4": "ERROR 4: It was specified that Teacher {prof} must have double periods; however, the teaching load in one of their classes is 1 lesson per week.",
+    "consistencia.erro5": "ERROR 5: The maximum number of lessons per day was specified for Teacher {prof}, but the values specified for this teacher are insufficient for them to fulfill their weekly teaching load.",
+    "consistencia.erro6": "ERROR 6: The maximum number of working days specified for Teacher {prof} is insufficient for them to fulfill their teaching load.",
+    "consistencia.erro7": "ERROR 7: The sum of the teaching loads of the subjects of class {turma} does not match the total number of lessons each class attends during the week.",
+    "consistencia.erro8": "ERROR 8: The maximum number of lessons on {dia} was specified for each teacher, but the values specified are insufficient to cover all classes.",
+    "consistencia.erro9": "ERROR 9: {n} is the number of teachers available on {dia}, in period {horario}, which is insufficient to cover all classes in that period.",
+    "consistencia.erro10": "ERROR 10: The maximum number of lessons specified for Teacher {prof} on {dia} is greater than the number of available periods of the same teacher on that day.",
+    "consistencia.erro_muitas_aulas": "ERROR: A maximum number of lessons that is too high was specified for Teacher {prof} on {dia}, considering that this teacher has only {n} class(es).",
+    "consistencia.erro_muitas_aulas_sem_geminada": "ERROR: A maximum number of lessons that is too high was specified for Teacher {prof} on {dia}, considering that this teacher has only {n} class(es) and that they do not want double periods.",
+    "consistencia.erro11": "ERROR 11: The maximum number of working days specified for Teacher {prof} is not correct, considering the number of days on which this teacher must have no lessons.",
+    "consistencia.erro12": "ERROR 12: Teacher {prof} does not attend enough days, considering that it was specified that this teacher must not have double periods.",
+    "consistencia.erro13": "ERROR 13: Teacher {prof} does not attend enough days to cover class {turma}.",
+
+    // ---- Formulário de feedback (hoje desativado na chamada, mas mantido) ----
+    "feedback.alerta_obrigatorias": "\n          Please answer all the required questions.\n        ",
+    "feedback.titulo": "Your feedback is important to us. What do you think of Prouesse?",
+    "feedback.p1.pergunta": "1 - Which type of data did you find easiest to enter?",
+    "feedback.opcao_dados_iniciais": "{aba.dados_iniciais} tab",
+    "feedback.opcao_professores_turmas": "{aba.professores_turmas} tab",
+    "feedback.opcao_aulas_dia_semana": "{aba.aulas_dia_semana} tab",
+    "feedback.opcao_horarios_nao_disponiveis": "{aba.horarios_nao_disponiveis} tab",
+    "feedback.p2.pergunta": "2 - Which type of data did you find most difficult to enter?",
+    "feedback.p3.pergunta": "3 - What do you think of how easy the interface is to use?",
+    "feedback.p3.facil": "Easy",
+    "feedback.p3.dificil": "Difficult",
+    "feedback.p4.pergunta": "4 - Did you read the manual?",
+    "feedback.p5.pergunta": "5 - What did you think of the manual?",
+    "feedback.p5.facil": "Easy to understand",
+    "feedback.p5.dificil": "Hard to understand",
+    "feedback.p6.pergunta": "6 - Additional comments (optional):",
+    "feedback.btn_enviar": "Submit",
+  }
+};
+
+// ---------- Tradução ----------
+// Retorna o texto da chave no idioma atual (com fallback para "pt"); substitui {parametros}.
+function t(chave, params, _nivel) {
+  _nivel = _nivel || 0;
+  const dic_idioma = DICIONARIO[IDIOMA] || {};
+  let texto = dic_idioma[chave];
+  if (texto === undefined || texto === "") texto = DICIONARIO.pt[chave];
+  if (texto === undefined) {
+    console.warn("i18n: chave inexistente no dicionário: " + chave);
+    return chave;
+  }
+  return texto.replace(/\{([\w.]+)\}/g, function (original, nome) {
+    if (params && Object.prototype.hasOwnProperty.call(params, nome)) return String(params[nome]);
+    if (nome === "url_site") return URL_SITE_PROUESSE;
+    if (_nivel < 3 && Object.prototype.hasOwnProperty.call(DICIONARIO.pt, nome)) return t(nome, undefined, _nivel + 1);
+    return original;
+  });
+}
+
+// Aplica o idioma ao HTML estático: [data-i18n] (texto), [data-i18n-html] (HTML),
+// [data-i18n-attr="atributo:chave;atributo2:chave2"] (atributos), <html lang> e <title>.
+function aplicar_idioma() {
+  document.documentElement.lang = (IDIOMA === "en") ? "en" : "pt-br";
+  const titulo_pagina = t("pagina.titulo");
+  if (titulo_pagina) document.title = titulo_pagina;
+
+  document.querySelectorAll("[data-i18n]").forEach(function (el) {
+    el.textContent = t(el.getAttribute("data-i18n"));
+  });
+  document.querySelectorAll("[data-i18n-html]").forEach(function (el) {
+    el.innerHTML = t(el.getAttribute("data-i18n-html"));
+  });
+  document.querySelectorAll("[data-i18n-attr]").forEach(function (el) {
+    el.getAttribute("data-i18n-attr").split(";").forEach(function (par) {
+      const i = par.indexOf(":");
+      if (i > 0) el.setAttribute(par.slice(0, i).trim(), t(par.slice(i + 1).trim()));
+    });
+  });
+}
+
+// O HTML estático acima já foi lido; aplicar agora (antes do registro de eventos e da 1ª renderização)
+aplicar_idioma();
+/* ================================ FIM: INTERNACIONALIZAÇÃO ================================ */
+</script><script>
+  // Declarando variáveis globais
+//Restauração dos dados
+let retorno_restauracao ="";
+var dados_Prouesse = new Object();
+if(retorno_restauracao.length == 0)
+dados_Prouesse = {dados_restauracao: {existe_restauracao: false, existe_resultados: false}};
+let controle_click_modal_id = "";
+let tipo_operacao_selecionada = 'restauracao'; // 'restauracao' ou 'resultados'
+
+
+$('body').on('click', '#restaurar_ir', ()=>{
+  if(tipo_operacao_selecionada === 'restauracao'){
+    if(ha_dados_preenchidos && !dados_salvos)
+      verificar_restauracao('ignorar_restaurar');
+    else{
+        restaurando_dados_arquivo(file_externo);
+        id_ir_close_modal = '#aba1-tab';
+        chamada = 'saida_modal_restaruacao';
+        sucesso_restauracao(t('modal.sucesso.destino_inicio'));
+        realizar_restauracao = true;
+     }
+  } else if(tipo_operacao_selecionada === 'resultados'){
+    if(ha_dados_preenchidos && !dados_salvos)
+      verificar_restauracao('ignorar_exibir');
+    else{
+      restaurando_dados_arquivo(file_externo);
+      dados_Prouesse.dados_restauracao.existe_resultados = true;
+      id_ir_close_modal = '#aba6-tab';
+      chamada = 'saida_modal_exibir_resultado';
+      sucesso_restauracao(t('modal.sucesso.destino_quadro'));
+      realizar_restauracao = true;
+    }
+  }
+})
+var id_ir_close_modal = '#aba1-tab';
+
+$('body').on('click', '#ignorar_restaurar', ()=>{
+  //zerando_dados();
+  dados_Prouesse.dados_restauracao.existe_restauracao = true;
+  restaurando_dados_arquivo(file_externo);
+  realizar_restauracao = true;
+  id_ir_close_modal = '#aba1-tab';
+  chamada = 'saida_modal_restaruacao';
+  //$('#restaurar_opcao').addClass('desabilitado');
+  $('#restaurar_ir').addClass('desabilitado');
+  $('#arquivo_restauracao_usuario').val('');
+  $('#restaurar_opcao').addClass('desabilitado');
+  tipo_operacao_selecionada = 'restauracao';
+  //$('.externo div').addClass('desabilitado');
+  $('.externo div').val('');
+  
+})
+
+$('body').on('click', '#ignorar_exibir', ()=>{
+  id_ir_close_modal = '#aba6-tab';
+  chamada = 'saida_modal_exibir_resultado';
+  dados_Prouesse.dados_restauracao.existe_resultados = true;
+  dados_Prouesse.dados_restauracao.existe_restauracao = true;
+  restaurando_dados_arquivo(file_externo);
+  check_abas.aba4_modal = true;
+  realizar_restauracao = true;
+  $('#restaurar_opcao').addClass('desabilitado');
+  $('#arquivo_restauracao_usuario').val('');
+  $('#exibir_resultados').addClass('desabilitado');
+  tipo_operacao_selecionada = 'restauracao';
+  //$('.externo div').addClass('desabilitado');
+  $('.externo div').val('');
+})
+
+function saida_modal_restaruacao(){
+  aba1();
+  aba2();
+  aba3();
+  aba4();
+  //$(id_ir_close_modal).click();
+  $('#aba1-tab').click();
+  id_ir_close_modal = '#aba1-tab';
+}
+let chamada = '';
+
+function saida_modal_exibir_resultado(){
+  aba1();
+  aba2();
+  aba3();
+  aba4();
+  //$(id_ir_close_modal).click();
+  $('#aba6-tab').click();
+  id_ir_close_modal = '#aba6-tab';
+}
+
+function saida_modal_salvar(){
+  aba1();
+  aba2();
+  aba3();
+  aba4();
+  //$(id_ir_close_modal).click();
+  $('#aba7-tab').click();
+  id_ir_close_modal = '#aba7-tab';
+}
+
+
+/* Compatibilidade jQuery + Bootstrap 5: o Bootstrap 5 escuta cliques nativos, e $(link).click() do jQuery
+   não gera clique nativo em <a>. Este tratador faz as chamadas $('#abaX-tab').click() do código trocarem a aba. */
+$(document).on('click', '[data-bs-toggle="tab"]', function (e) {
+  e.preventDefault();
+  bootstrap.Tab.getOrCreateInstance(this).show();
+});
+
+/* Tema claro/escuro. O tema inicial é definido no <head> (escolha salva ou preferência do sistema);
+   aqui fica o botão da barra superior. A escolha é guardada em localStorage (se disponível). */
+function aplicar_tema(tema, salvar) {
+  document.documentElement.setAttribute('data-bs-theme', tema);
+  $('#alternar_tema').attr('aria-pressed', tema === 'dark');
+  $('meta[name="theme-color"]').attr('content', tema === 'dark' ? '#0e1616' : '#173a39');
+  if (salvar) { try { localStorage.setItem('prouesse_tema', tema); } catch (e) {} }
+}
+aplicar_tema(document.documentElement.getAttribute('data-bs-theme') || 'light', false);
+$(document).on('click', '#alternar_tema', function () {
+  aplicar_tema(document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark', true);
+});
+// Sem escolha salva, acompanha mudanças do tema do sistema
+if (window.matchMedia) {
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+    let salvo = null;
+    try { salvo = localStorage.getItem('prouesse_tema'); } catch (err) {}
+    if (!salvo) aplicar_tema(e.matches ? 'dark' : 'light', false);
+  });
+}
+
+$('#myModal').on('hidden.bs.modal', function (e) {
+  
+  if (chamada == "saida_modal_restaruacao")
+    saida_modal_restaruacao();
+  else if (chamada == 'saida_modal_exibir_resultado')
+    saida_modal_exibir_resultado();
+  else if(chamada == 'saida_modal_salvar')
+    saida_modal_salvar();
+  else if (chamada == 'click_aba1')
+    $('#aba1-tab').click();
+
+
+  chamada = '';
+
+})
+
+function verificar_restauracao(id_n_salvar){
+    let a = '<div>' + t('modal.restauracao.dados_existentes') + '</div>'
+    // Construir o alerta
+    $('#modal').html(a);
+    let b = '<button class= "btn btn-success" id = "salvar_dados" data-bs-dismiss="modal">' + t('modal.restauracao.btn_salvar_atuais') + '</button><button id = "'+ id_n_salvar + '" data-bs-dismiss="modal" class="btn btn-danger">' + t('modal.btn_nao_salvar_prosseguir') + '</button>'
+    $('.modal-footer').html(b);
+    $('.modal-title').html(t('modal.titulo_alerta_3x'))
+
+    // Chamando modal
+    $("#myModal").modal("show");
+}
+
+function dados_salvos_ignorar(id_n_salvar){
+    let a = '<div>' + t('modal.restauracao.dados_ja_salvos') + '</div>'
+    // Construir o alerta
+    $('#modal').html(a);
+    let b = '<button class= "btn btn-success" id = "salvar_dados" data-bs-dismiss="modal">' + t('modal.restauracao.btn_salvar_novamente') + '</button><button id = "'+ id_n_salvar + '" data-bs-dismiss="modal" class="btn btn-danger">' + t('modal.btn_nao_salvar_prosseguir') + '</button>'
+    $('.modal-footer').html(b);
+    $('.modal-title').html(t('modal.titulo_alerta_3x'))
+
+    // Chamando modal
+    $("#myModal").modal("show");
+}
+
+function sucesso_restauracao(mensagem){
+    
+    let a = '<div>' + t('modal.sucesso.mensagem') + '</div>'
+    // Construir o alerta
+    $('#modal').html(a);
+    let b = '<button class= "btn btn-success" data-bs-dismiss="modal">' + t('modal.sucesso.btn_ir_para', {destino: mensagem}) + '</button>'
+    $('.modal-footer').html(b);
+    $('.modal-title').html(t('modal.sucesso.titulo'))
+    id_ir_close_modal = '#aba1-tab';
+    // Chamando modal
+    $("#myModal").modal("show");
+}
+
+
+$('body').on('click', '#novo', ()=>{
+
+  if(ha_dados_preenchidos && !dados_salvos){
+    console.log("1")
+    verificar_restauracao('ignorar_nao_salvar');
+  }
+
+  else if(dados_salvos){
+    console.log("2")
+    dados_salvos_ignorar('ignorar_nao_salvar')
+  }else {
+    console.log("3")
+    zerando_dados();
+    $('#aba1-tab').click();
+  }
+
+  $('#restaurar_opcao').addClass('desabilitado');
+})
+ 
+
+$('body').on('click', '#salvar_dados', ()=>{
+  id_ir_close_modal = '#aba7-tab';
+  chamada = 'saida_modal_salvar';
+  $('#restaurar_opcao').addClass('desabilitado');
+})
+
+$('body').on('click', '#ignorar_nao_salvar', ()=>{
+  zerando_dados();
+  chamada = 'click_aba1';
+  //chamada = 'saida_modal_restaruacao';
+  //$('#aba1-tab').click();
+  $('#restaurar_opcao').addClass('desabilitado');
+})
+
+$('body').on('click', '#dados_restauracao', ()=>{
+  tipo_operacao_selecionada = 'restauracao';
+  $('#arquivo_restauracao_usuario').val('');
+  $('#label_arquivo_restauracao').html(t('aba0.label_arquivo_restauracao'));
+  $('#restaurar_opcao').removeClass('desabilitado');
+  $('#exibir_resultados').addClass('desabilitado');
+})
+
+$('body').on('click', '#dados_resultados', ()=>{
+  tipo_operacao_selecionada = 'resultados';
+  $('#arquivo_restauracao_usuario').val('');
+  $('#label_arquivo_restauracao').html(t('aba0.label_arquivo_resultados'));
+  $('#restaurar_opcao').removeClass('desabilitado');
+  $('#exibir_resultados').addClass('desabilitado');
+})
+
+let file_externo = '';
+//let retorno_restauracao ="";
+function restaurando_dados_arquivo(evento){
+  let file = evento.target.files[0];
+  let reader = new FileReader();
+  reader.readAsText(file);
+  reader.onload = function (){
+    let c = JSON.parse(reader.result);
+    retorno_restauracao = c;
+    dados_Prouesse = c;
+    console.log("Dados restaurados do arquivo:");
+    console.log(dados_Prouesse);
+  };
+}
+
+
+$('#arquivo_restauracao_usuario').change((e)=>{
+  $('#restaurar_ir').removeClass('desabilitado');
+  file_externo = e;
+})
+
+// Salvar pra arquivo externo
+$('#salvar').click(()=>{
+  check_abas.aba4_modal = false;
+  dados_salvos = true;
+  // Garantir que existe_restauracao seja sempre true ao salvar
+  dados_restauracao.existe_restauracao = true;
+  dados_restauracao.m5 = num_aulas_por_dia || 5;
+  aba1();
+  aba2();
+  aba3();
+  aba4();
+  let a = construtor_array_saida();
+  console.log(a)
+  gerando_arq_conf(a, '#nome_arquivo');
+})
+
+$('#ir_inicio').click(()=>{
+$('#aba0-tab').click()
+})
+
+
+// Variáveis para o salvamento e restauração dos valores preenchidos
+
+let prof_disciplinas = new Array();
+let turmas_declaradas = new Array();
+let turmas_prof = new Object();
+let ch_turmas_prof = new Object();
+let aula_geminada = new Object();
+let ch_igual = new Object();
+let opcao_flexibilidade = new Object();
+let num_max_dia_semana_opcao_1 = new Object();
+let num_max_dia_semana_opcao_2 = new Object();
+
+let n_dias_trab_por_semana = new Object();
+let horarios_n_disp_dias_semana = new Object();
+
+let dados_restauracao = new Object();
+
+let realizar_restauracao = false;
+
+let num_aulas_por_dia = 5
+
+dados_restauracao = {
+    existe_restauracao: true,
+    existe_resultados: false,
+    prof_disciplinas: new Array(),
+    turmas_declaradas: new Array(),
+    turmas_prof: new Object(), 
+    ch_turmas_prof: new Object(),
+    aula_geminada: new Object(),
+    ch_igual: new Object(),
+    opcao_flexibilidade: new Object(),
+    num_max_dia_semana_opcao_1: new Object(),
+    num_max_dia_semana_opcao_2: new Object(),
+    n_dias_trab_por_semana: new Object(),
+    horarios_n_disp_dias_semana: new Object(),
+    m5: 5
+};
+
+//Variáveis para a checagem de preenchimento
+
+let turmas_prof_disc_check = [];
+let check_abas = {aba1: false, aba2: false, aba3: false, aba4: false, aba4_modal: false};
+let change_aba1 = {aba1: false, aba2: false, aba3: false, aba4: false, aba5: false};
+let ha_dados_preenchidos = false;
+let dados_salvos = false;
+
+
+// Recuperando os dados se existir
+function recuperando_dados(){
+  if(realizar_restauracao && dados_Prouesse.dados_restauracao){
+    ha_dados_preenchidos = true;
+    dados_salvos = false;
+    
+    // Tratamento para aceitar dados incompletos - verifica se existe_restauracao é true, "" (string vazia) ou qualquer valor truthy
+    let existe_rest = dados_Prouesse.dados_restauracao.existe_restauracao;
+    if(existe_rest === "" || existe_rest === null || existe_rest === undefined) {
+      existe_rest = true; // Considera que se o arquivo foi carregado, há dados para restaurar
+    }
+    
+    dados_restauracao = {
+      existe_restauracao: existe_rest,
+      existe_resultados: dados_Prouesse.dados_restauracao.existe_resultados || false,
+      prof_disciplinas: dados_Prouesse.dados_restauracao.prof_disciplinas || [],
+      turmas_declaradas: dados_Prouesse.dados_restauracao.turmas_declaradas || [],
+      turmas_prof: dados_Prouesse.dados_restauracao.turmas_prof || {}, 
+      ch_turmas_prof: dados_Prouesse.dados_restauracao.ch_turmas_prof || {},
+      aula_geminada: dados_Prouesse.dados_restauracao.aula_geminada || {},
+      ch_igual: dados_Prouesse.dados_restauracao.ch_igual || {},
+      opcao_flexibilidade: dados_Prouesse.dados_restauracao.opcao_flexibilidade || {},
+      num_max_dia_semana_opcao_1: dados_Prouesse.dados_restauracao.num_max_dia_semana_opcao_1 || {},
+      num_max_dia_semana_opcao_2: dados_Prouesse.dados_restauracao.num_max_dia_semana_opcao_2 || {},
+      n_dias_trab_por_semana: dados_Prouesse.dados_restauracao.n_dias_trab_por_semana || {},
+      horarios_n_disp_dias_semana: dados_Prouesse.dados_restauracao.horarios_n_disp_dias_semana || {},
+      m5: dados_Prouesse.dados_restauracao.m5 || dados_Prouesse.m5 || 5
+    };
+    
+    if(dados_Prouesse.maxHorariosND && dados_Prouesse.maxHorariosND.length > 0){
+      dados_Prouesse.dados_restauracao.existe_resultados = true;
+    }
+    if(dados_Prouesse.tabelaA && dados_Prouesse.tabelaA.length > 0){
+      dados_Prouesse.dados_restauracao.existe_resultados = true;
+    }
+
+    obj_parse = dados_Prouesse; 
+
+    
+    // Salvando nas variáveis globais com valores padrão caso estejam vazios
+    prof_disciplinas = obj_parse.dados_restauracao.prof_disciplinas || [];
+    turmas_declaradas = obj_parse.dados_restauracao.turmas_declaradas || [];
+    turmas_prof = obj_parse.dados_restauracao.turmas_prof || {};
+    ch_igual = obj_parse.dados_restauracao.ch_igual || {};
+    ch_turmas_prof = obj_parse.dados_restauracao.ch_turmas_prof || {};
+    aula_geminada = obj_parse.dados_restauracao.aula_geminada || {};
+    opcao_flexibilidade = obj_parse.dados_restauracao.opcao_flexibilidade || {};
+    num_max_dia_semana_opcao_1 = obj_parse.dados_restauracao.num_max_dia_semana_opcao_1 || {};
+    num_max_dia_semana_opcao_2 = obj_parse.dados_restauracao.num_max_dia_semana_opcao_2 || {};
+    n_dias_trab_por_semana = obj_parse.dados_restauracao.n_dias_trab_por_semana || {};
+    horarios_n_disp_dias_semana = obj_parse.dados_restauracao.horarios_n_disp_dias_semana || {};
+    num_aulas_por_dia = obj_parse.dados_restauracao.m5 || obj_parse.m5 || 5; // Declarando 5 para manter compatibilidade de versões anteriores
+
+    realizar_restauracao = false;
+  }
+
+}
+
+//Verificar
+// Arquivo contem os scripts referentes à verificação de condições de entrada de dados
+function zerando_dados(){
+  $('.gerar_configuracao').css('display', 'none');
+  $('.erros').html('');
+  dados_Prouesse = {dados_restauracao: {existe_restauracao: false, existe_resultados: false}};
+  prof_disciplinas = [];
+  turmas_declaradas = [];
+  turmas_prof = {};
+  ch_turmas_prof = {};
+  aula_geminada = {};
+  ch_igual = {};
+  opcao_flexibilidade = {};
+  num_max_dia_semana_opcao_1 = {};
+  num_max_dia_semana_opcao_2 = {};
+  n_dias_trab_por_semana = {};
+  horarios_n_disp_dias_semana = {};
+  ha_dados_preenchidos = false;
+  dados_salvos = false;
+}
+
+function controle_numerico(evento, min, max){
+  let a = '[' + min + '-' + max + ']*';
+  let b = new RegExp(a);
+  if(b.exec(evento.key)[0] == "")
+    evento.preventDefault();
+  else {
+    if(evento.target.value.length > 1)
+      evento.preventDefault();
+      $(evento.target).val(evento.Key);
+  }
+}
+
+// Aba1
+
+// Checando alteração na aba1
+$('body').on('change', '.input_professores input', () =>{
+ if($('.input_professores input').length > 0)
+  check_abas.aba1 = true;
+})
+
+//Controle de dez caracteres nos inputs de professores
+$('body').on('keypress','.input_professores input', e =>{
+  if(e.target.value.length > 9)
+    e.preventDefault();
+})
+
+//Controle de dez caracteres nos inputs de disciplinas
+$('body').on('keypress','.input_disciplinas input', e =>{
+  if(e.target.value.length > 9)
+    e.preventDefault();
+})
+
+//Controle de dez caracteres nos inputs de turmas
+$('body').on('keypress','.input_turmas input', e =>{
+  if(e.target.value.length > 9)
+    e.preventDefault();
+})
+
+
+
+$('body').on('change', '#num_aulas_por_dia_input', (e) =>{
+  num_aulas_por_dia = Number(e.target.value);
+  dados_restauracao.m5 = num_aulas_por_dia;
+})
+
+// Função de verificação de inputs iguais
+
+function input_igual(evento, endereco, chave_mensagem){
+  let a;
+  let saida = $(evento.target).val();
+  if(saida == "")
+    return;
+  let id_atual = evento.target.id;
+  let id_igual_anterior = 0;
+  let igual = 0;
+  let referencia = {'ref_atual': id_atual, 'ref_igual': ''};
+  $(endereco).each((indice, elem) =>{
+    if($(elem).val() == saida){
+      igual++;
+      a = $(elem).attr('id');
+      if(a != id_atual)
+        id_igual_anterior = a;
+    }
+  })
+
+  if(igual>1){
+    let a = '<div>' + t(chave_mensagem) + '</div>'
+    // Construir o alerta
+    $('#modal').html(a);
+    let b = '<button class= "btn btn-primary" data-campo = "#' + id_atual + '" data-bs-dismiss="modal">' + t('modal.nome_duplicado.btn_corrigir_este') + '</button><button data-campo = "#' + id_igual_anterior + '" data-bs-dismiss="modal" class="btn btn-primary">' + t('modal.nome_duplicado.btn_corrigir_anterior') + '</button>'
+    $('.modal-footer').html(b);
+    $('.modal-title').html(t('modal.titulo_alerta_triste'))
+
+    // Chamando modal
+    $("#myModal").modal("show");
+
+  }
+}
+
+$('body').on('blur', '.input_professores input', e =>{
+  input_igual(e, '.input_professores input', 'modal.nome_duplicado.professor');
+})
+
+$('body').on('blur', '.input_turmas input', e =>{
+  input_igual(e, '.input_turmas input', 'modal.nome_duplicado.turma');
+})
+
+// Seletor de campo ao clicar
+
+
+// Campo a receber o foco quando a modal terminar de fechar (alerta de nome repetido).
+// Selecionar o campo com a modal ainda aberta não funciona no Bootstrap 5: o foco fica
+// preso na modal e é devolvido ao elemento anterior ao fechar.
+let campo_apos_modal = '';
+$('body').on('click', '.modal-footer', e =>{
+  // O destino fica em data-campo (e não em href): o Bootstrap 5 lê o href de um botão
+  // data-bs-dismiss como o elemento a fechar, e então a modal não fecharia.
+  let destino = $(e.target).closest('[data-campo]').attr('data-campo');
+  campo_apos_modal = (destino && destino.charAt(0) == '#' && destino.length > 1) ? destino : '';
+  if (destino) id_ir_close_modal = destino;
+})
+
+$('#myModal').on('hidden.bs.modal', function () {
+  if (campo_apos_modal) {
+    let campo = $(campo_apos_modal);
+    campo_apos_modal = '';
+    if (campo.length) campo.trigger('focus').select();
+  }
+})
+
+
+$('body').on('click', '#aba1 input', e =>{
+  $(e.target).select();
+})
+//Aba2
+
+// Controle de dados numéricos Carga Horária por turma
+let valor_turma_ch_controle = "";
+$('body').on('keypress', '.turmas_ch', e =>{
+  if(e.key.match(/[0-9]*/)[0] =="")
+    e.preventDefault();
+  else valor_turma_ch_controle = e.target.value;
+  // como alternativa ver beforeinput
+})
+
+$('body').on('keyup', '.turmas_ch', e =>{
+  if(e.target.value > 10){
+    e.preventDefault();
+    e.target.value = valor_turma_ch_controle;
+  }
+})
+
+// Capturando turmas por disciplina para retornar erro de preenchimento turma com duas disciplinas iguais
+function capturando_turmas_por_disciplina(){
+  let a;
+  let professor;
+  let disciplina;
+  turmas_prof_disc_check = [];
+
+  $('.select_turmas').each((indice, elem)=>{
+    $(elem).find('input:checked').each((indice2, elem2) =>{
+      if(indice2 == 0){
+        professor = $(elem2).parents('tr').find('.professor').html();
+        disciplina = prof_disc.professor.indexOf(professor);
+        disciplina = prof_disc.disciplina[disciplina];
+        }
+      a = $(elem2).next().html();
+      turmas_prof_disc_check.push({turma: a, disciplina: disciplina, professor: professor});
+    })
+  })
+}
+
+// Validando as turmas por disciplina para retornar erro de preenchimento turma com duas disciplinas iguais
+function validando_turmas(e){
+  let professor = $(e.target).parents('tr').find('.professor').html();
+  let disciplina = prof_disc.professor.indexOf(professor);
+  disciplina = prof_disc.disciplina[disciplina]
+  let turma = $(e.target).next().html();
+  let igual = 0;
+
+  function a (obj){
+    if(obj.turma == turma && obj.disciplina == disciplina){
+      igual++
+      return true;
+    } else return false;
+  }
+
+  let filtro = turmas_prof_disc_check.filter(a);
+
+  if(igual>1){
+    let c = "";
+    for(let i = 0; i < filtro.length; i++){
+      c += filtro[i].professor ;
+      if((filtro.length - i) > 1)
+        c+= '; <br>';
+      else c+= '.';
+    }
+
+    let a = '<div>' + t('modal.turma_disc_repetida.mensagem', {turma: turma, disciplina: disciplina, professores: c}) + '</div>'
+    // Construir o 
+    $('#modal').html(a);
+    let b = '<button data-bs-dismiss="modal" class="btn btn-danger">' + t('comum.fechar') + '</button>'
+    $('.modal-footer').html(b);
+    $('.modal-title').html(t('modal.titulo_alerta_triste'))
+
+    // Chamando modal
+    $("#myModal").modal("show");
+
+  }
+}
+//Chamando as funções
+$('body').on('blur', '.select_turmas input', e=>{
+  capturando_turmas_por_disciplina();
+  validando_turmas(e);
+})
+
+//Aba3
+
+// Controle Número máximo de aulas por dia da semana => o valor deve ser menor ou igual a 5
+$('body').on('keypress','.n_max_aulas_dia', e =>{
+  controle_numerico(e, 0, num_aulas_por_dia);
+})
+
+
+//Aba4
+
+// Controle Número de dias de trabalho por semana => o valor deve ser menor ou igual a 5
+// $('body').on('keypress','.n_dias_trab_por_semana', e =>{
+//   controle_numerico(e, 0, 5);
+// })
+
+// Controle Número máximo de aulas por dia da semana => teclas enter e tab
+
+$('body').on('keydown','.n_max_aulas_dia', e =>{
+  let Keycode = e.keyCode;
+  let classe = $(e.target).attr('class');
+  classe = '.' + classe.substring(0, 7);
+  let selecao;
+
+  if(Keycode == 13 || Keycode == 9){ // teclas enter e tab
+    e.preventDefault();
+    selecao = $(e.target).parent().next();
+
+    if(selecao.length > 0)
+      selecao.find(classe).select();
+
+    else if (classe == '.opcao_1'){
+      $(e.target).parents('tr').find('.opcao_2').eq(0).select();
+    }
+    else if(classe == '.opcao_2'){
+      $(e.target).parents('tr').next().find('.opcao_1').eq(0).select();
+    }
+  } 
+})
+
+
+function testesDeConsistencia(dados) {
+  console.log(dados)
+
+    let m5 = dados.m5;
+    let nomeA = dados.nomeA;
+    let nomeP = dados.nomeP;
+    let qP = dados.qP;
+    let qA = dados.qA; 
+    let nTurmasP = dados.nTurmasP;
+    let lista = dados.lista;
+    let ch = dados.ch;
+    let maxP = dados.maxP;
+    let horariosND = dados.horariosND;
+    let semGeminadasP = dados.semGeminadasP;
+    let comGeminadasP = dados.comGeminadasP;
+    let maxDiasP = dados.maxDiasP;
+let test1, d, aux, aux1, aux2, j, k, k1, p, a;
+let soma = [];
+let arranjo = [];
+let sErros_ = [];
+
+
+for (p = 1; p <= qP; p++) {
+  if (nTurmasP[p] == 0) {
+    sErros_.push(t('consistencia.erro1', {prof: nomeP[p]}));
+  }
+}
+
+for (p = 1; p <= qP; p++) {
+  test1 = true;
+  for (d = 0; d <= 4; d++){
+    test1 = test1 && maxP[p][d] < 2;
+  }
+  if (comGeminadasP[p] && test1){
+    sErros_.push(t('consistencia.erro2', {prof: nomeP[p]}));
+  }
+
+  if (semGeminadasP[p] && maxDiasP[p] == 1){
+    sErros_.push(t('consistencia.erro3', {prof: nomeP[p]}));
+  }
+  
+  aux1 = 0;
+  for (j = 1; j <= nTurmasP[p]; j++) {
+    aux1 += Number(ch[p][j]);
+    if (comGeminadasP[p] && ch[p][j] == 1)
+      sErros_.push(t('consistencia.erro4', {prof: nomeP[p]}));
+  }
+  aux2 = 0;
+  for (d = 0; d <= 4; d++){
+    aux2 += Number(maxP[p][d]);
+  }
+  if (aux1 > aux2){ // aux1 = carga horaria semanal total
+    sErros_.push(t('consistencia.erro5', {prof: nomeP[p]}));
+  }
+  for (d = 0; d <= 4; d++){ 
+    arranjo[d] = maxP[p][d];
+  }
+  arranjo.sort(function(a,b){return a - b});
+  aux = 0;
+  for (k = 0; k < maxDiasP[p]; k++){
+    aux += arranjo[4-k];
+  }
+  if (aux1 > aux){ // aux = soma dos maxDiasP[p] maiores maxP[p][*]
+    sErros_.push(t('consistencia.erro6', {prof: nomeP[p]}));
+  }
+}
+
+for (a = 1; a <= qA; a++)
+  soma[a] = 0;
+for (p = 1; p <= qP; p++) {
+  for (j = 1; j <= nTurmasP[p]; j++){
+    soma[lista[p][j]] += (ch[p][j] * 1);
+  }
+}
+for (a = 1; a <= qA; a++) {
+  if (soma[a] != m5 * 5)
+    sErros_.push(t('consistencia.erro7', {turma: nomeA[a]}));
+}
+
+for (d = 0; d <= 4; d++) {
+  aux1 = 0;
+  for (p = 1; p <= qP; p++)
+    aux1 += maxP[p][d];
+  if (aux1 < m5 * qA)
+    sErros_.push(t('consistencia.erro8', {dia: t('dias.ord_ordinal.' + d)}));
+}
+
+for (d = 0; d <= 4; d++) {
+  for (k1 = 1; k1 <= m5; k1++) {
+    aux1 = qP;
+    for (p = 1; p <= qP; p++) {
+      if (horariosND[p][d][k1] || maxP[p][d] == 0) 
+        aux1--;
+    }
+    if (aux1 < qA)
+      sErros_.push(t('consistencia.erro9', {n: aux1, dia: t('dias.ord_a.' + d), horario: k1}));
+  }
+}
+
+for (p = 1; p <= qP; p++) {
+  for (d = 0; d <= 4; d++) {
+    // determinando o nro aux1 de horários não disponíveis do prof.
+    // p no dia d:
+    aux1 = 0;
+    for (k1 = 1; k1 <= m5; k1++) {
+      if (horariosND[p][d][k1])
+        aux1++;
+    }
+    if (maxP[p][d] > m5 - aux1)
+      sErros_.push(t('consistencia.erro10', {prof: nomeP[p], dia: t('dias.ord_a.' + d)}));
+    if ( (!semGeminadasP[p]) && maxP[p][d] > 2 * nTurmasP[p] )
+      sErros_ .push(t('consistencia.erro_muitas_aulas', {prof: nomeP[p], dia: t('dias.ord_ordinal_f.' + d), n: nTurmasP[p]}));
+    if (semGeminadasP[p] && maxP[p][d] > nTurmasP[p]) 
+      sErros_.push(t('consistencia.erro_muitas_aulas_sem_geminada', {prof: nomeP[p], dia: t('dias.ord_ordinal_f.' + d), n: nTurmasP[p]}));
+  }
+}
+
+for (p = 1; p <= qP; p++) {
+  aux = 0;
+  for (d = 0; d <= 4; d++) {
+    if (maxP[p][d] > 0)
+      aux++;
+  }
+
+  if (aux < maxDiasP[p])
+    sErros_.push(t('consistencia.erro11', {prof: nomeP[p]}));
+  test1 = false;
+  for (j = 1; j <= nTurmasP[p]; j++) {
+    if (ch[p][j] > 1)
+      test1 = true;
+  }
+  if (test1 && semGeminadasP[p] && (aux < 2 || maxDiasP[p] < 2))
+    sErros_.push(t('consistencia.erro12', {prof: nomeP[p]}));
+}
+
+for (p = 1; p <= qP; p++) {  
+  aux1 = (semGeminadasP[p] ? 1 : 2);
+  aux = 0;
+  for (d = 0; d <= 4; d++) 
+    aux += Math.min( maxP[p][d], aux1 );
+  aux = Math.min( aux, maxDiasP[p]*aux1 );
+  for (j = 1; j <= nTurmasP[p]; j++) {
+    if (ch[p][j] > aux)
+      sErros_.push(t('consistencia.erro13', {prof: nomeP[p], turma: nomeA[lista[p][j]]}));
+  }
+}
+// fim dos testes de consistencia
+return sErros_;
+}
+
+function erro_campos_requedos(){
+
+  let req_turmas = [];
+  $('.requerido_check').each((index, elem) =>{
+    if($(elem).find(':checked').length == 0)
+      req_turmas.push($(elem).parents('tr').find('.professor').html());
+  })
+
+  let req_ch = [];
+  $('.turmas_ch.requerido').each((index, elem) =>{
+    
+    $(elem).find('input').each((index2, elem2) =>{
+      if($(elem2).val() == ""){
+        req_ch.push($(elem2).parents('tr').find('.professor').html())
+        return false;
+      }
+    })
+  
+  })
+
+let req_opcao_n_max_aulas = [];
+let opcao_selecionada;
+let req_n_max_aula_por_dia_semana = [];
+let a;
+let b;
+
+$('.entradas_aba3').find('.requerido_radio').each((index, elem) =>{
+  b = undefined;
+  a = $(elem).find('input:checked');
+  if(a.length == 0){
+    req_opcao_n_max_aulas.push($(elem).parents('tr').find('.professor').html())
+    //req_n_max_aula_por_dia_semana[index] = 'Selecione primeiramente umas das opções';
+  }
+  else {
+    opcao_selecionada = a.val();
+    let dd = 0
+    
+    $(elem).parents('tr').find('.opcao_' + opcao_selecionada).each((index2, elem2) =>{
+
+      if($(elem2).val() == ""){
+        b = $(elem2).parents('tr').find('.professor').html();
+        dd++
+      }
+      //else req_n_max_aula_por_dia_semana[index] = 0;
+    })
+    if(b != undefined)
+    req_n_max_aula_por_dia_semana.push(b);
+}
+})
+
+  let req_n_dias_trab_por_sem = [];
+  $('.n_dias_trab_por_semana ').each((index, elem) =>{
+   if($(elem).val()=="")
+    req_n_dias_trab_por_sem.push($(elem).parents('tr').find('.professor').html());
+    //else req_n_dias_trab_por_sem.push(0);
+  })
+
+let saida = {
+              req_turmas: req_turmas,
+              req_ch: req_ch,
+              req_opcao_n_max_aulas: req_opcao_n_max_aulas,
+              req_n_max_aula_por_dia_semana: req_n_max_aula_por_dia_semana, 
+              req_n_dias_trab_por_sem: req_n_dias_trab_por_sem
+              }
+
+return saida;
+
+}
+
+function construtor_erro(erros){
+ let mensangem_erro = "";
+ let a;
+
+  function construtor_mensagem_erro(arr, mensagem_chave, aba_id, chave_nome_aba){
+   let mensangem_erro_funcao = "";
+   if(arr.length != 0){
+    // Link para a aba onde o dado deve ser preenchido
+    let link_aba = '<a href="#" class="link-aba" data-aba="' + aba_id + '">"' + t(chave_nome_aba) + '"</a>';
+    mensangem_erro_funcao += '<div class = "erro_interno"><b>' + t(mensagem_chave + (arr.length > 1 ? '.plural' : '.singular'), {link: link_aba}) + '</b><br><ul> ';
+    
+    for(let i = 0; i < arr.length; i++){
+      mensangem_erro_funcao += '<li>' + arr[i];
+
+      if(i == (arr.length - 1))
+        mensangem_erro_funcao += ".</li></ul></div>";
+      else mensangem_erro_funcao += ";</li>"
+    }
+   }
+   return mensangem_erro_funcao;
+  }
+  mensangem_erro += construtor_mensagem_erro(erros.req_turmas, 'erro.req_turmas', 'aba2-tab', 'aba.professores_turmas');
+  mensangem_erro += construtor_mensagem_erro(erros.req_ch, 'erro.req_ch', 'aba2-tab', 'aba.professores_turmas');
+  mensangem_erro += construtor_mensagem_erro(erros.req_opcao_n_max_aulas, 'erro.req_opcao_n_max_aulas', 'aba3-tab', 'aba.aulas_dia_semana');
+  mensangem_erro += construtor_mensagem_erro(erros.req_n_max_aula_por_dia_semana, 'erro.req_n_max_aula_por_dia_semana', 'aba3-tab', 'aba.aulas_dia_semana');
+  mensangem_erro += construtor_mensagem_erro(erros.req_n_dias_trab_por_sem, 'erro.req_n_dias_trab_por_sem', 'aba4-tab', 'aba.horarios_nao_disponiveis');
+
+  return mensangem_erro;
+}
+  let arry_saida_json_adaptado = new Object(); // Declarada em escopo global para ser aproveitada na função gerando_arq_conf()
+  
+//Função que consolida as verificação de erro e retorna a mensagem de erro ou sucesso
+  function consolicao_verificacao(){
+  aba1();
+  aba2();
+  aba3();
+  aba4();
+  let mensagem_erro = "";
+  let controle = false;
+  if(!check_abas.aba1){
+    mensagem_erro += '<div class = "erro_interno"><b>' + t('erro.preencher_dados_iniciais') + '</b><br></div>';
+    controle = true;
+  }
+
+  if(!check_abas.aba2){
+    mensagem_erro += '<div class = "erro_interno"><b>' + t('erro.passar_pela_aba', {aba: t('aba.professores_turmas'), aba_id: 'aba2-tab'}) + '</b><br></div>';
+    controle = true;
+  }
+  
+  // if(!check_abas.aba3){
+  //   mensagem_erro += '<div class = "erro_interno"><b>' + t('erro.passar_pela_aba', {aba: t('aba.aulas_dia_semana'), aba_id: 'aba3-tab'}) + '</b><br></div>';
+  //   controle = true;
+  // }
+  
+  if(!check_abas.aba4){
+    mensagem_erro += '<div class = "erro_interno"><b>' + t('erro.passar_pela_aba', {aba: t('aba.horarios_nao_disponiveis'), aba_id: 'aba4-tab'}) + '</b><br></div>';
+    controle = true;
+  }
+  if(controle){
+    $('.erros').html(mensagem_erro);
+    return
+  }
+
+  mensagem_erro += construtor_erro(erro_campos_requedos());
+
+  if(mensagem_erro.length > 0){
+    $('.erros').html(mensagem_erro);
+    return
+  }
+
+  arry_saida_json_adaptado = construtor_array_saida();
+  let erro_3 = testesDeConsistencia(arry_saida_json_adaptado);
+
+  if(erro_3.length == 0){
+    mensagem_erro = '<div class = "erro_interno sucesso"><b>' + t('erro.sucesso') + '</b><br></div>';
+    $('#gerador_config').removeAttr('disabled');
+    $('.erros').html(mensagem_erro);
+    $('.gerar_configuracao').css('display', '');
+    return;
+  }
+
+  for(let i = 0; i < erro_3.length; i++){
+    mensagem_erro += '<div class = "erro_interno"><b>' + erro_3[i] + '</b><br></div>';
+  }
+  {
+    $('.erros').html(mensagem_erro);
+    return
+  }
+}
+
+$('body').on('click', '#inconsistencia', e =>{
+  consolicao_verificacao();
+})
+
+// Direcionar para aba específica ao clicar no link de erro da verificação de inconsistências
+
+$('body').on('click', '.link-aba', function(e){
+  e.preventDefault();
+  const abaId = $(this).data('aba');
+  $('#' + abaId).click();
+  
+  // Scroll suave até a aba (opcional)
+  $('html, body').animate({
+    scrollTop: $('#' + abaId).offset().top - 100
+  }, 500);
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//Recuperar
+//Aba1
+let prof_disc = {professor: [], disciplina: []};
+function recuperando_prof_displinas(){
+  prof_disc.professor = [];
+  prof_disc.disciplina = [];
+  let a;
+  let b;
+  let c = [];
+  $('.table_pro_disc_turm').each((indice, elemento)=>{
+    a = $(elemento).find('.input_professores input').val();
+    if(a != ""){
+      b = $(elemento).find('.input_disciplinas input').val();
+      prof_disc.professor.push(a);
+      prof_disc.disciplina.push(b)
+    }
+  })
+}
+
+
+//Aba2
+
+// Resturando elementos que anteriormente foram checados com a mudança de abas
+
+function restaurando_check_turmas(){
+ let professor;
+ let name;
+ let verificacao;
+
+ $('.dados_professor').each((index, elemento)=>{
+    professor = $(elemento).find('.professor').html();
+    $(elemento).find('.select_turmas input').each((index2, elemento2)=>{
+        if(turmas_prof[professor] != undefined){
+          name = $(elemento2).attr('name');
+          verificacao = turmas_prof[professor].some(elem => elem == name);
+          if(verificacao){
+            $(elemento2).attr('checked','""');
+          }
+      }
+    })
+  })
+}
+
+function restaurando_geminadas_ch_igual_checkbox(e){ // e = qualquer elemento de linha
+  professor = $(e).parents('tr').find('.professor').html();
+  let aula_geminada_referencia = aula_geminada[professor];
+  let ch_igual_referencia = ch_igual[professor];
+  let valor;
+
+  if(aula_geminada_referencia != undefined){
+      valor = '.aula_geminada [value = "' + aula_geminada_referencia + '"]';
+      $(e).parents('tr').find(valor).prop('checked','true');
+    }
+  if(ch_igual_referencia != undefined){
+    
+    let a = $(e).parents('tr').find('.carga_horaria_igual');
+    if(a.val() == 'sim' && ch_igual_referencia == "nao"){
+      a.removeAttr('checked');
+      a.val('nao');
+    }
+  }
+}
+
+// Resturando elementos que anteriormente foram checados com a mudança de abas
+
+function restaurando_carga_horaria_turmas(){
+ 
+ let professor;
+ let name;
+ let verificacao;
+ let indice_name;
+ let referencia = $('tr .turmas_ch input');
+ if(referencia.length == 0){
+  return;
+ }
+
+ $('tr .turmas_ch input').each((index, elemento)=>{
+    
+    professor = $(elemento).parents('.dados_professor').find('.professor').html();
+    if(ch_turmas_prof[professor] != undefined){
+      name = $(elemento).attr('name');
+      verificacao = ch_turmas_prof[professor].indexOf(('name = ' + name));
+      if(verificacao != -1){
+        $(elemento).val(ch_turmas_prof[professor][verificacao +1]);
+      }
+    }
+  })
+ }
+
+
+//Aba3
+
+// Restaurando valores número máximo de aulas por dia e opção escolhida
+function restaurando_numero_maximo_aulas(){
+  let professor;
+  let controle = 0;
+  $('.entradas_aba4').each((indice, e)=>{
+  professor = $(e).find('.professor').html();
+  
+  $(e).find('.opcao_1').each((indice2, e2)=>{
+    if(num_max_dia_semana_opcao_1[professor] != undefined){
+      $(e2).val(num_max_dia_semana_opcao_1[professor][indice2]);
+    }
+  })
+
+  $(e).find('.opcao_2').each((indice3, e3)=>{
+    if(num_max_dia_semana_opcao_2[professor] != undefined){
+      $(e3).val(num_max_dia_semana_opcao_2[professor][indice3]);
+    }
+  })
+
+  controle = opcao_flexibilidade[professor];
+  if(controle != undefined){
+    $(e).find('[type = "radio"][value = "'+ controle + '"]').prop('checked', 'checked');
+    flexibilidade_construtor($(e).find('.opcao_aulas:checked'));
+  }
+  })
+}
+
+
+//Aba4
+
+function restaurando_n_dias_trab_semana(){
+  let professor;
+  let dia_semana;
+
+  $('.n_dias_trab_por_semana ').each((indice, elem)=>{
+      professor = $(elem).parents('.entradas_aba4').find('.professor').html();
+      if(n_dias_trab_por_semana[professor] != undefined)
+        $(elem).val(n_dias_trab_por_semana[professor]);
+  })
+
+    let controle;
+
+  $('.entradas_aba4').each((indice, elem)=>{  /// tr de seleçao
+    professor = $(elem).find('.professor').html();
+
+    if(horarios_n_disp_dias_semana[professor] != undefined){
+
+      $(elem).find('.horarios_n_disp_por_dias_da_semana').each((indice2, elem2)=>{
+        
+        $(elem2).find('input').each((indice3, elem3)=>{
+          dia_semana = $(elem3).attr('class')
+          if(horarios_n_disp_dias_semana[professor][dia_semana] != undefined){
+            if(horarios_n_disp_dias_semana[professor][dia_semana][indice3]){
+              $(elem3).prop('checked', 'true');
+            }
+          }
+        })
+
+      })
+    }
+  })
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//Construir
+
+// Aba1
+function aba1(){
+
+  recuperando_dados();
+  let tr = "";
+  let i = 1;
+
+  if(prof_disciplinas.length > 0){
+    for(i = 1, tr = ""; i <= prof_disciplinas.length; i++){
+      tr += '<tr class="table_pro_disc_turm"><td class="ordem">' + i + '</td> <td class="input_professores"><input type="text" class="form-control input_professores " id="input_professores_' + i + '" placeholder="' + t('aba1.placeholder_professor') + '"></td>';
+      tr += '<td class="input_disciplinas"><input class="form-control" list="materias" id="input_disciplina_' + i + '" placeholder="' + t('aba1.placeholder_disciplina') + '">';
+      tr += '<datalist id="materias"> <option value="' + t('disciplinas.matematica') + '"></option><option value="' + t('disciplinas.ingles') + '"></option><option value="' + t('disciplinas.portugues') + '"></option><option value="' + t('disciplinas.literatura') + '"></option>';
+      tr += '<option value="' + t('disciplinas.quimica') + '"></option><option value="' + t('disciplinas.fisica') + '"></option><option value="' + t('disciplinas.biologia') + '"></option><option value="' + t('disciplinas.historia') + '"></option>';
+      tr += '<option value="' + t('disciplinas.geografia') + '"></option><option value="' + t('disciplinas.espanhol') + '"></option><option value="' + t('disciplinas.educacao_fisica') + '"></option>';
+      tr += '<option value="' + t('disciplinas.musica') + '"></option><option value="' + t('disciplinas.sociologia') + '"></option><option value="' + t('disciplinas.filosofia') + '"></option><option value="' + t('disciplinas.artes') + '"></option>'
+      tr += '<option value="' + t('disciplinas.ens_relig') + '"></option></datalist></td><td class="">';
+      tr +=  '<button id = "dd" type="button" class="btn btn-danger b-excluir"><b>X</b></button></td></tr>'
+    }
+  }
+  
+  tr += '<tr class="table_pro_disc_turm"><td class="ordem">' + i + '</td> <td class="input_professores"><input type="text" class="form-control input_professores " id="input_professores_' + i + '" placeholder="' + t('aba1.placeholder_professor') + '"></td>';
+  tr += '<td class="input_disciplinas"><input class="form-control" list="materias" id="input_disciplina_' + i + '" placeholder="' + t('aba1.placeholder_disciplina') + '">';
+  tr += '<datalist id="materias"> <option value="' + t('disciplinas.matematica') + '"></option><option value="' + t('disciplinas.ingles') + '"></option><option value="' + t('disciplinas.portugues') + '"></option><option value="' + t('disciplinas.literatura') + '"></option>';
+  tr += '<option value="' + t('disciplinas.quimica') + '"></option><option value="' + t('disciplinas.fisica') + '"></option><option value="' + t('disciplinas.biologia') + '"></option><option value="' + t('disciplinas.historia') + '"></option>';
+  tr += '<option value="' + t('disciplinas.geografia') + '"></option><option value="' + t('disciplinas.espanhol') + '"></option><option value="' + t('disciplinas.educacao_fisica') + '"></option>';
+  tr += '<option value="' + t('disciplinas.musica') + '"></option><option value="' + t('disciplinas.sociologia') + '"></option><option value="' + t('disciplinas.filosofia') + '"></option><option value="' + t('disciplinas.artes') + '"></option>'
+  tr += '<option value="' + t('disciplinas.ens_relig') + '"></option></datalist></td><td class="">';
+  tr +=  '<button id = "dd" type="button" class="btn btn-danger b-excluir desabilitado"><b>X</b></button></td></tr>'
+
+  $('.table_pro_disc_turm').html(tr);
+
+  if(prof_disciplinas.length > 0){
+    $('.input_professores input').each((index, elem) =>{
+      if(index < prof_disciplinas.length)
+        $(elem).val(prof_disciplinas[index].professor);
+    })
+    $('.input_disciplinas input').each((index, elem) =>{
+      if(index < prof_disciplinas.length)
+        $(elem).val(prof_disciplinas[index].disciplina);
+    })
+}
+  
+  // Atribuir valores {professor: prof, disciplina: discip}
+  i = 1;
+  tr = "";
+  if(turmas_declaradas.length > 0){
+    for(i = 0, tr = ""; i < turmas_declaradas.length; i++){
+      tr += '<tr><td class="input_turmas"><input id = "turma_' + (1 + i) + '" type="text" class="input_turmas form-control" placeholder="' + t('aba1.placeholder_turma') + '"></td>';
+      tr += '<td class="input_turmas b-excluir"><button type="button" class="btn btn-danger b-excluir"><b>X</b></button></td></tr>';
+    }
+    check_abas.aba1 = true; 
+  }
+  
+  // A linha em branco final tem o próximo número (antes repetia o id da última turma restaurada,
+  // e o alerta de nome repetido, que localiza o campo pelo id, apontava para o campo errado)
+  tr += '<tr><td class="input_turmas"><input id = "turma_' + (turmas_declaradas.length + 1) + '" type="text" class="input_turmas form-control" placeholder="' + t('aba1.placeholder_turma') + '"></td>';
+  tr += '<td class="input_turmas b-excluir"><button type="button" class="btn btn-danger b-excluir desabilitado"><b>X</b></button></td></tr>';
+
+  $('.input_turmas tbody').html(tr);
+  if(turmas_declaradas.length > 0){
+    $('.input_turmas  input').each((index, elem) =>{
+      $(elem).val(turmas_declaradas[index]);
+    })
+  } 
+
+  $("#num_aulas_por_dia_input").val(num_aulas_por_dia);
+}
+
+$('body').on('click', '#aba1-tab', ()=>{
+  aba1();
+});
+
+
+
+//Pulando botão excluir
+
+$('body').on('keydown','.input_disciplinas input', e =>{
+  if(e.keyCode == 9 || e.keyCode == 13){
+    let indice =  Number($(e.target).parents('tr').find('.ordem').html()) ; 
+    $('.input_professores input').eq(indice).select();
+    e.preventDefault();
+  }
+})
+
+$('body').on('keydown','.input_turmas input', e =>{
+  if(e.keyCode == 9 || e.keyCode == 13){
+    e.preventDefault();
+    $(e.target).parents('tr').next().find('input').select();
+  }
+})
+
+// Excluindo linha tabela
+
+function excluir_linha (evento){
+
+  let a = $(evento).parents('tr');
+  let b = a.find('.ordem').html();
+  a.fadeOut('slow',()=> {
+    
+    let c;
+    let d;
+    a.parents('tbody').find('.ordem').each((valor, elemento) =>{
+      c = $(elemento).html();
+      if (c >b){
+        d = c-1;
+        $(elemento).html(d);
+      }
+    })
+    a.remove();
+    if($(evento).parents('tr').attr('class') == "table_pro_disc_turm")
+    salvando_prof_disciplina();
+    salvando_codigo_turmas();
+  })
+
+    // Removendo elementos da aba2 // AVALIAR SE DESNECESSÁRIO
+  $('.ordem_aba2').each((valor, elemento) =>{
+      c = $(elemento).html();
+      if (c >= b){
+        if(c==b){
+          $(elemento).parents('tr').remove();
+        }
+        d = c-1;
+        $(elemento).html(d);
+      }
+  })
+}
+
+
+// Função para exclusão de linha na aba1
+$('body').on('click','.b-excluir', e=>{
+  excluir_linha(e.target);
+});
+
+
+// Função para inserção de professores e disciplinas
+function nova_linha_prof_discipl(evento, id_referencia){
+    
+    let a = $(evento.target);
+    let b = a.parents('tbody');
+    let c = b.find('.ordem:last').html();
+    let num_id = Number(c) + 1;
+
+    let elemento_1 = '<tr style = "display: none;" class="table_pro_disc_turm"><td class="ordem">' + num_id + '<td class="input_professores"><input id="input_professores_' + num_id +'" type="text" class="input_professores form-control" value="" placeholder ="' + t('aba1.placeholder_professor_nova_linha') + '"></td>'
+    let elemento_2 = '<td class="input_disciplinas"><input class="input_disciplinas form-control" value="" list="materias" placeholder="' + t('aba1.placeholder_disciplina') + '"><datalist id="materias"><option value="' + t('disciplinas.matematica') + '"></option><option value="' + t('disciplinas.ingles') + '"></option><option value="' + t('disciplinas.portugues') + '"></option> <option value="' + t('disciplinas.literatura') + '"></option><option value="' + t('disciplinas.quimica') + '"></option><option value="' + t('disciplinas.fisica') + '"></option><option value="' + t('disciplinas.biologia') + '"></option><option value="' + t('disciplinas.historia') + '"></option><option value="' + t('disciplinas.geografia') + '"></option><option value="' + t('disciplinas.espanhol') + '"></option><option value="' + t('disciplinas.educacao_fisica') + '"></option><option value="' + t('disciplinas.musica') + '"></option><option value="' + t('disciplinas.artes') + '"></option><option value="' + t('disciplinas.ensino_religioso') + '"></option>option value="' + t('disciplinas.sociologia') + '"></option><option value="' + t('disciplinas.filosofia') + '"></option></datalist></td>';
+    let botao_excluir = '<td><button type="button" class="btn btn-danger b-excluir desabilitado"><b>X</b></button></td></tr>'
+    let elemento_consolidado = elemento_1 + elemento_2 + botao_excluir;
+    
+    // mostrar botão excluir
+    b.find('tr:last').find('button').removeClass('desabilitado');
+
+    // criar novo elemento
+    b.find('tr:last').after(elemento_consolidado);
+    b.find('tr:last').show('slow');
+  }
+
+  function nova_linha_turmas(evento){
+    
+    let a = $(evento.target);
+    let b = a.parents('tbody');
+    let id = b.find('.input_turmas input:last').attr('id');
+    let num_id = id.substring(id.length, 6);
+
+    valor = Number(num_id) + 1;
+    let elemento = '<tr style = "display: none;" class="table_pro_disc_turm"><td class="input_turmas"><input type="text" class="input_turmas form-control" id="turma_' + valor +'" placeholder ="' + t('aba1.placeholder_turma') + '"></td> <td class="input_turmas b-excluir"><button type="button" class="btn btn-danger b-excluir desabilitado"><b>X</b></button></td></tr>'
+
+    // mostrar botão excluir
+    b.find('tr:last').find('button').removeClass('desabilitado');
+
+    // criar novo elemento
+    b.find('tr:last').after(elemento);
+    b.find('tr:last').show('slow');
+  }
+
+  
+  // Verifica se após a inserção de uma nova lima há alguma string e exclui se for vazia
+  function verificao_nova_linha_aba_1(evento){
+
+    let a = $(evento.target);
+    if(a.val()==""){
+      let b = a.parents('tbody');
+      b.find('tr:last').hide('slow').remove();
+      b.find('tr:last button').addClass('desabilitado');
+    }
+}
+
+$('body').on('keypress','.input_professores input:last', (e)=>{
+  nova_linha_prof_discipl(e, 'input_professores_')
+})
+
+$('body').on('blur','.input_professores input:not(input:last):last', (e)=>{
+  verificao_nova_linha_aba_1(e)
+})
+
+
+$('body').on('keypress','.input_turmas input:last', (e)=>{
+  nova_linha_turmas(e)
+})
+
+$('body').on('blur','.input_turmas input:not(input:last):last', (e)=>{
+  verificao_nova_linha_aba_1(e)
+})
+
+
+
+//Criando entradas para lista de professores // AVALIAR: EM NENHUM MOMENTO A FUNÇÃO ESTA SENDO CHAMADA 
+function alter_elem_tabela(id_controle, classe_alteracao, cabecalho, nome_id_input, placeholder)
+{
+  let controle = $(id_controle).val();
+  let dd = classe_alteracao;
+  let a = $(dd);
+  let b = Number(a.val());
+  let c = controle;
+  
+  if (b == ''){
+    let cabecalho_aba ='<table style="display: none" class=" table table-hover tabela-prouesse"><thead class="sticky-top"><tr><th class="text-center align-middle numeracao">#</th> <th>'+ cabecalho +'</th></tr> </thead><tbody>'
+    let corpo_tab_aba = cabecalho_aba;
+    for (let i = 1; i <= controle; i++) {
+        corpo_tab_aba += '<tr><td>'+i+'</td>';
+        corpo_tab_aba +='<td><input id="'+nome_id_input+ i +'"type="text" placeholder = "'+placeholder+ i +'" class="form-control"></td>';
+        corpo_tab_aba +='</tr>';
+      }
+    corpo_tab_aba+=  '</tbody></table>';         
+    let d = a.html(corpo_tab_aba);
+    d = a.find('table').show('slow')
+  }
+  
+  // Adiciona elementos
+  else if(b < controle){
+    let corpo_tab_aba;
+    for (let i = b + 1; i <= controle; i++) {
+        corpo_tab_aba += '<tr style="display: none"><td>'+i+'</td>';
+        corpo_tab_aba +='<td><input id="'+nome_id_input+ i+'"type="text" placeholder = "'+placeholder+ i +'" class="form-control"></td>';
+        corpo_tab_aba +='</tr>';
+      }
+    let d = a.find('tbody').append(corpo_tab_aba); 
+    d = a.find('tr').show('slow')
+  }
+  
+  // Remove os últimos elementos
+  else if (b > controle){
+    let e = controle - b;
+    let f = $.each(a.find('tbody tr'), (indice, elemento)=>{
+      if(indice>=controle){
+        let n = $(elemento)
+        n.hide('slow', ()=>{n.remove();})
+      }
+    });
+  }
+ 
+  b = a.val(controle)
+}
+
+
+function alerta_change_aba1(aba){
+    // substituir por switch que não estava funcionando
+    if(change_aba1.aba1){
+      let c;
+
+      switch(aba){
+        case 2: c = change_aba1.aba2; change_aba1.aba2 = true; break;
+        case 3: c = change_aba1.aba3; change_aba1.aba3 = true; break;
+        case 4: c = change_aba1.aba4; change_aba1.aba4 = true; break;
+        case 5: c = change_aba1.aba5; change_aba1.aba5 = true;
+      }
+
+      if(!c){
+        let a = '<div style = " text-align: justify; text-justify: inter-word;">' + t('modal.alteracao_nome_professor.mensagem') + '</div>'
+        
+        $('#modal').html(a);
+        b = '<button data-bs-dismiss="modal" class="btn btn-danger">' + t('comum.fechar') + '</button>'
+        $('.modal-footer').html(b);
+        $('.modal-title').html(t('modal.titulo_alerta'))
+        // Chamando modal
+        $("#myModal").modal("show");
+      }
+ }
+    
+}
+
+
+function aba2(){
+  alerta_change_aba1(2);
+  
+  // Verficação de disciplinas declaradas
+  function verificacao_displinas_declaradas(){
+    let controle_dis = [];
+    let m = 0;
+    $('.input_professores input').each((index, elem) =>{
+      m = $(elem).val();
+      if(m != ""){
+        if($(elem).parents('tr').find('.input_disciplinas input').val() == "")
+          controle_dis.push(m);
+      }
+    })
+    return controle_dis;
+  }
+
+  // Caso as disciplinas foram preenchidas, continuar a função
+  recuperando_prof_displinas();
+  let a = [];
+  let b;
+  $('.input_professores input').each((valor, elemento)=>{
+    b = $(elemento).val();
+    if(b !== "")
+      a.push(b);
+   });
+
+  let cabecalho_aba ='<table class="col-12 table table-hover tabela-prouesse align-middle">';
+  cabecalho_aba += '<thead class="sticky-top"> <tr>';
+  cabecalho_aba += '<th class="aba_2_col_1 text-center align-middle numeracao">#</th>';
+  cabecalho_aba += '<th class = "aba_2_col_2 align-middle">' + t('comum.professor') + '</th>'
+  cabecalho_aba += '<th class = "aba_2_col_3 align-middle">' + t('aba2.th_turmas') + '</th>';
+  cabecalho_aba += '<th class = "aba_2_col_2 align-middle aula_geminada_info">';
+  cabecalho_aba += t('aba2.th_aulas_geminadas') + ' <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle aula_geminada_info" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg></th>'
+  cabecalho_aba += '<th class = "aba_2_col_2 align-middle"> ' + t('aba2.th_ch_igual') + '</th>';
+  cabecalho_aba += '<th class = "aba_2_col_3 align-middle">' + t('aba2.th_ch_turma') + '</th></tr></thead>';
+  
+  let corpo_tab_aba;
+  let professor;
+  let cabecalho_interno_aba = '<td><table><thead>';
+  corpo_tab_aba = cabecalho_aba;
+
+  let e = [];
+  let f ;
+  $('.input_turmas input').each((valores, elementos)=>{
+    f = $(elementos).val();
+    if(f !== "")
+      e.push(f);
+  });
+
+  // Listando professores
+  for (let h = 1; h <= a.length; h++) {
+    professor = a[h-1];
+    corpo_tab_aba += '<tr class = "dados_professor">';
+    corpo_tab_aba += '<td class = "text-center align-middle ordem_aba2 ordem">'+h+'</td>';
+    corpo_tab_aba += '<td class = "text-center align-middle professor">' + professor + '</td>';
+    corpo_tab_aba += '<td> <details class = "_details"><summary>' + t('aba2.resumo_selecione_turmas') + '</summary> <div class="form-check detalhes select_turmas requerido_check" id = "select_turma_prof_' + h + '">';
+    for(let i = 0; i <e.length; i++){
+      corpo_tab_aba += '<input class="form-check-input turma_prof_' + h + '" type="checkbox" name = "'+ i +'" value = "' + e[i] + '"> <label for = "turma_prof_' + h + '">' + e[i] + '</label><br>';
+    }
+    corpo_tab_aba += '</div></details></td>';
+     
+    corpo_tab_aba +='<td class=" align-middle aula_geminada aula_geninada_prof_' + h + '" value = "indefinido"><input class = "aula_geminada_radio text-center align-middle form-check-input" type="radio" id="aula_geminda_prof_'+h+'_sim" name="aula_geminda_prof_'+h+'" value="sim"><label for = "aula_geminda_prof_'+h+'_sim">' + t('comum.sim') + '</label><br><input class = "aula_geminada_radio text-center align-middle form-check-input" type="radio" id="aula_geminda_prof_'+h+'_nao" name="aula_geminda_prof_'+h+'" value="nao"><label for = "aula_geminda_prof_'+h+'_nao">' + t('comum.nao') + '</label><br><input class = "aula_geminada_radio text-center align-middle form-check-input" type="radio" id="aula_geminda_prof_'+h+'_indiferente" name="aula_geminda_prof_'+h+'" value="indiferente" checked = "true"><label for = "aula_geminda_prof_'+h+'_indiferente">' + t('aba2.indiferente') + '</label></td>'
+    corpo_tab_aba += '<td class=" align-middle"> <input class= "carga_horaria_igual" id = "carga_h_igual_prof_'+ h+'" type="checkbox" checked value="sim">' + t('comum.sim') + '</input></td>'
+    corpo_tab_aba += '<td style="display: "><details class = "_details"><summary>' + t('aba2.resumo_ch_turmas') + '</summary> <div class="form-check detalhes turmas_input turmas_ch requerido">'
+    corpo_tab_aba += '</div></details></td>';
+    corpo_tab_aba += '</tr>';
+  }
+  corpo_tab_aba = corpo_tab_aba +'</tbody></table>';
+
+  $('.aba2_tabela_1').html(corpo_tab_aba);
+   restaurando_check_turmas();
+  $('.select_turmas').each((index, elemento)=>{
+    restaurando_geminadas_ch_igual_checkbox(elemento);
+    carga_horaria_turmas(elemento);
+    restaurando_carga_horaria_turmas();
+  })
+
+
+  check_abas.aba2 = true;
+}
+
+
+//Montando aba 2
+$('body').on('click', '#aba2-tab', ()=>{
+  aba2();
+});
+
+$('body').on('click', '.aula_geminada_info', () =>{
+  let a = '<div>' + t('modal.aula_geminada.mensagem') + '</div>'
+  $('#modal').html(a);
+  
+  let b = '<button data-bs-dismiss="modal" class="btn btn-danger">' + t('comum.fechar') + '</button>'
+  $('.modal-footer').html(b);
+  $('.modal-title').html(t('modal.aula_geminada.titulo'))
+  // Chamando modal
+  $("#myModal").modal("show");
+})
+ 
+
+// Construtor carga horária por turma
+function carga_horaria_turmas(e){
+
+  let a = $(e).parents('tr');
+  let b = a.find('.select_turmas').find('input:checked');
+  //let c = a.parents('tr');
+  let c = a.find('.turmas_input');
+  let opcoes = '<table class = "detalhes turmas_ch"><tbody><tr>';
+  let valor;
+
+  if(a.find('.carga_horaria_igual').val() == "nao"){
+    $(b).each((valores, elementos)=>{
+      valor = $(elementos).val()
+      opcoes += '<td class = "turmas_ch">' + valor +'</td> <td class = "turmas_ch"><input type = "number" class="form-control turmas_ch_input" name = "' + valor + '"></td></tr>';
+    });
+  }
+  else opcoes += '<td class = "turmas_ch"> ' + t('aba2.ch_turmas_celula') + '</td><td class = "turmas_ch"><input type = "number" class = "form-control turmas_ch_input" name = "carga_hororaria_igual_turmas"></td></tr>'; 
+  opcoes += '</tbody></table>'
+  c.html(opcoes);
+  c.show('slow');
+  //restaurando_carga_horaria_turmas();
+}
+
+
+ // Alterando valor chackbox sim
+
+ $('body').on('click', '.carga_horaria_igual', e=>{
+  let a = $(e.target);
+  let b = a.val();
+  if(b == "sim"){
+    a.val("nao");
+  }
+  else a.val("sim");
+  carga_horaria_turmas(e.target);
+  restaurando_carga_horaria_turmas();
+
+  // Salvando ckeckbox carga horária igual
+  let professor = a.parents('tr').find('.professor').html();
+  ch_igual[professor] = a.val();
+  dados_restauracao.ch_igual = ch_igual;
+ })
+
+ 
+$('body').on('click', '.select_turmas input', e=>{
+  carga_horaria_turmas(e.target);
+  restaurando_carga_horaria_turmas();
+})
+
+
+
+function aba3(){
+  // Aba "Aulas por dia da semana" desativada na V37: o número máximo de aulas por dia
+  // passou para a aba "Horários não disponíveis" (aba4). Código anterior abaixo, comentado.
+  return
+/*
+alerta_change_aba1(3);
+let a = [];
+let b;
+$('.input_professores input').each((valor, elemento)=>{
+  b = $(elemento).val();
+    if(b !== "")
+      a.push(b);
+});
+ 
+let cabecalho_aba ='<table class="table table-hover tabela-prouesse"><thead class = "sticky-top">';
+cabecalho_aba += '<tr> <th class="text-center align-middle numeracao" rowspan ="2">#</th>';
+cabecalho_aba += '<th rowspan="2" class = "aba3_col_2">' + t('comum.professor') + '</th>';
+cabecalho_aba += '<th rowspan="2" class = "aba3_col_3">' + t('aba3.th_opcao') + '</th>';
+cabecalho_aba += '<th colspan = "5">' + t('aba3.th_n_max_aulas') + '</th>';
+cabecalho_aba += '</tr><tr class = "dia_sem"><th>' + t('dias.segunda') + '</th><th>' + t('dias.terca') + '</th><th>' + t('dias.quarta') + '</th><th>' + t('dias.quinta') + '</th><th>' + t('dias.sexta') + '</th></tr></thead><tbody></tbody>'
+
+let professor
+let corpo_tab_aba = cabecalho_aba
+let tabela_interna
+let conteudo_tabela_intera
+let h;
+
+// Listando professores
+
+for (let i = 0; i < a.length; i++) {
+              
+  h = i+1;
+
+  corpo_tab_aba += '<tr class = "entradas_aba3"><td class = "text-center align-middle">'+h+'</td>'
+  corpo_tab_aba += '<td class = "professor text-center align-middle">' + a[i] + '</td>'
+  corpo_tab_aba += '<td class = "requerido_radio" ><input class = "opcao_prof_' + h + ' opcao_aulas text-center align-middle form-check-input" type="radio" name="aula_geminda_prof_'+h+'" value="1">' + t('aba3.opcao_1') + '</input><br><br><br><input class = "opcao_prof_' + h + ' opcao_aulas text-center align-middle form-check-input" type="radio" name="aula_geminda_prof_'+h+'" value="2">' + t('aba3.opcao_2') + '</input></td>'
+
+  conteudo_tabela_intera = '<td class = "opcao requerido"><input type="number" class="opcao_1 form-control n_max_aulas_dia" name="" placeholder = "' + t('aba3.placeholder_opcao_1') + '" min = "0" max = "5"><br> <input type="number" class="opcao_2 form-control input_flex n_max_aulas_dia" name="" placeholder = "' + t('aba3.placeholder_opcao_2') + '" min = "0" max = "5"></td>'
+
+  conteudo_tabela_intera += '<td class = "opcao requerido"><input type="number" class="opcao_1 form-control n_max_aulas_dia" name="" placeholder = "' + t('aba3.placeholder_opcao_1') + '" min = "0" max = "5"> <br> <input type="number" class="opcao_2 form-control input_flex n_max_aulas_dia" name="" placeholder = "' + t('aba3.placeholder_opcao_2') + '" min = "0" max = "5"></td>'
+
+  conteudo_tabela_intera += '<td class = "opcao requerido"><input type="number" class="opcao_1 form-control n_max_aulas_dia" name="" placeholder = "' + t('aba3.placeholder_opcao_1') + '" min = "0" max = "5"><br> <input type="number" class="opcao_2 form-control input_flex n_max_aulas_dia" name="" placeholder = "' + t('aba3.placeholder_opcao_2') + '" min = "0" max = "5"></td>'
+
+  conteudo_tabela_intera += '<td class = "opcao requerido"><input type="number" class="opcao_1 form-control n_max_aulas_dia" name="" placeholder = "' + t('aba3.placeholder_opcao_1') + '" min = "0" max = "5"> <br> <input type="number" class="opcao_2 form-control input_flex n_max_aulas_dia" name="" placeholder = "' + t('aba3.placeholder_opcao_2') + '" min = "0" max = "5"></td>'
+
+  conteudo_tabela_intera+= '<td class = "opcao requerido"><input type="number" class="opcao_1 form-control n_max_aulas_dia" name="" placeholder = "' + t('aba3.placeholder_opcao_1') + '" min = "0" max = "5"> <br> <input type="number" class="opcao_2 form-control input_flex n_max_aulas_dia" name="" placeholder = "' + t('aba3.placeholder_opcao_2') + '" min = "0" max = "5"></td>'
+
+  corpo_tab_aba += conteudo_tabela_intera
+  corpo_tab_aba += '</tr>'
+
+  }
+
+  corpo_tab_aba += '</tbody></table>'
+
+  $('#aba3').html(corpo_tab_aba);
+  restaurando_numero_maximo_aulas();
+  check_abas.aba3 = true;
+*/
+}
+
+//Montando aba 3
+ $('body').on('click', '#aba3-tab', ()=>{
+  aba3();
+})
+
+// Função de alteração na opção escolhida
+function flexibilidade_construtor(e){
+  let a = $(e);
+  let b = a.val();
+  let c;
+  let d;
+
+  if(b==1){
+    c = '.opcao_2';
+    d = '.opcao_1';
+  }
+  else{
+    c = '.opcao_1';
+    d = '.opcao_2';
+  }
+  a.parents('tr').find(c).attr('disabled','disabled');
+  a.parents('tr').find(d).removeAttr('disabled');
+}
+
+
+// Montanto aba3 - flexibilidade e salvando opções preenchidas
+$('body').on('click', '.opcao_aulas', e=>{
+  flexibilidade_construtor(e.target)
+})
+
+//Montando aba 4
+function aba4(){
+  alerta_change_aba1(4);
+  let cabecalho_aba ='<table class="col-12 table table-hover tabela-prouesse"><thead class = "sticky-top"> <tr> <th class="text-center align-middle numeracao" rowspan ="2">#</th><th class = "aba_4_col_2" rowspan="2">' + t('comum.professor') + '</th><th class = "aba_4_col_4" rowspan="2">' + t('aba4.th_n_dias') + '</th><th class = "aba_4_col_5" colspan = "6">' + t('aba4.th_hnd') + '</th></tr><tr><th>' + t('dias.segunda') + '</th> <th>' + t('dias.terca') + '</th><th>' + t('dias.quarta') + '</th><th>' + t('dias.quinta') + '</th><th>' + t('dias.sexta') + '</th></tr></thead><tbody></tbody>'
+
+let a = [];
+let b;
+$('.input_professores input').each((valor, elemento)=>{
+  b = $(elemento).val();
+    if(b !== "")
+      a.push(b);
+});
+
+let professor
+let corpo_tab_aba = cabecalho_aba
+let tabela_interna
+let conteudo_tabela_intera
+let maxHorariosND = dados_Prouesse.maxHorariosND;
+
+// Listando professores
+
+for (let h = 0; h < a.length; h++) {
+  corpo_tab_aba += '<tr class = "text-center align-middle entradas_aba4"><td class = "text-center align-middle">'+ (h + 1) +'</td>';
+  corpo_tab_aba += '<td class = "text-center align-middle professor">' + a[h] + '</td>';
+  corpo_tab_aba += '<td class = "align-bottom"><input class = "requerido n_dias_trab_por_semana text-center align-middle form-control" id = "dias_trab_sem'+ (h + 1) +'" type="number" placeholder = "' + t('aba4.placeholder_n_dias') + '" min = "0" max = "5">';
+  // Inputs de rádio ocultos (mantendo a classe requerido_radio para compatibilidade)
+  corpo_tab_aba += '<div class="requerido_radio" style="display:none;"><input class = "opcao_prof_' + (h + 1) + ' opcao_aulas text-center align-middle form-check-input" type="radio" name="aula_geminda_prof_'+(h + 1)+'" value="1">' + t('aba3.opcao_1') + '</input><input class = "opcao_prof_' + (h + 1) + ' opcao_aulas text-center align-middle form-check-input" type="radio" name="aula_geminda_prof_'+(h + 1)+'" value="2">' + t('aba3.opcao_2') + '</input></div>';
+  corpo_tab_aba += '</td>'
+  
+  for(let j = 2; j<=6; j++){
+
+  // Avaliar a necessidade de manter name e id
+  corpo_tab_aba += '<td class = "align-middle horarios_n_disp_por_dias_da_semana">';
+  if(dados_Prouesse.dados_restauracao.existe_resultados){
+    corpo_tab_aba += '<div>' + t('aba4.n_max_hnd') + ' <span>'+ maxHorariosND[h + 1][j - 2] +'</span> ';
+    corpo_tab_aba += '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle n_max_flex_info" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/><circle cx="8" cy="4.5" r="1"/></svg>';
+    corpo_tab_aba += '</div><div><hr class="hr_info_max_hnd">';
+  }
+
+  if (num_aulas_por_dia == Number()) {
+    num_aulas_por_dia = Number($('#num_aulas_por_dia_input').val())
+    console.log("Definindo num_aulas_por_dia em aba4() como:", num_aulas_por_dia);
+  }
+
+  for (let horario = 1; horario <= num_aulas_por_dia; horario++) {
+    corpo_tab_aba += '<label class="checkbox-label-vertical"><span>' + t('comum.horario_' + horario) + '</span><input type="checkbox" class = "dia_' + j + '" name="hnd_'+ j +'_prof_'+ (h + 1) +'" id = "hnd_aula_'+ horario +'_prof_'+ (h + 1) +'" value="'+ horario +'"></label>';
+  }
+
+  // Inputs numéricos de opção 1 abaixo dos checkboxes
+  corpo_tab_aba += '<div class="opcao requerido" style="margin-top:10px;">';
+  corpo_tab_aba += '<input type="number" class="opcao_1 form-control n_max_aulas_dia" name="" placeholder="' + t('aba4.placeholder_n_max_aulas_dia') + '" min="0" max="' + num_aulas_por_dia + '" title="' + t('aba4.title_n_max_aulas_dia') + '">';
+  // Input de opção 2 oculto (mantendo classes para compatibilidade)
+  corpo_tab_aba += '<input type="number" class="opcao_2 form-control input_flex n_max_aulas_dia" name="" placeholder="' + t('aba3.placeholder_opcao_2') + '" min="0" max="' + num_aulas_por_dia + '" style="display:none;">';
+  corpo_tab_aba += '</div>';
+
+  corpo_tab_aba += '</div></td>'
+  
+  }
+  corpo_tab_aba += '</tr>'
+  }
+
+  corpo_tab_aba += '</tbody></table>'
+
+  $('#aba4').html(corpo_tab_aba);
+  restaurando_n_dias_trab_semana();
+  restaurando_numero_maximo_aulas();
+    $('.entradas_aba4').each((index, elem) =>{
+      salvando_h_n_disp_por_dia_semana($(elem).find('input').eq(0))
+  })
+    check_abas.aba4 = true;
+
+}
+
+ $('body').on('click', '#aba4-tab', ()=>{
+  aba4();
+  if(check_abas.aba4_modal){
+    check_abas.aba4_modal = false;
+    n_max_flex_info();
+   }
+})
+
+ $('body').on('click', '.n_max_flex_info', (e)=>{
+  let valor = $(e.target).parent().find('span').html();
+  n_max_flex_info(valor);
+})
+ 
+  function n_max_flex_info(valor){
+    let b = '';
+    if (valor != undefined){
+      if(valor > 1)
+        b = '<br><p>' + t('modal.n_max_hnd.mais_de_um', {valor: valor}) + '</p>'
+      else if(valor == 1)
+        b = '<br><p>' + t('modal.n_max_hnd.um') + '</p>'
+      else if(valor == 0)
+        b = '<br><p>' + t('modal.n_max_hnd.zero') + '</p>'
+    }
+    let a = '<div style = " text-align: justify; text-justify: inter-word;">' + t('modal.n_max_hnd.mensagem');
+    a += b;
+    $('#modal').html(a);
+        
+    b = '<button data-bs-dismiss="modal" class="btn btn-danger">' + t('comum.fechar') + '</button>'
+    $('.modal-footer').html(b);
+    $('.modal-title').html(t('modal.n_max_hnd.titulo'))
+    // Chamando modal
+    $("#myModal").modal("show");
+  }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//Salvar
+//Aba1
+
+function salvando_prof_disciplina(){
+  ha_dados_preenchidos = true;
+  dados_salvos = false;
+  prof_disciplinas = [];
+  let prof;
+  let discip;
+  $('.input_professores input').each((index, elem)=>{
+    prof = $(elem).val();
+    discip = $(elem).parents('tr').find('.input_disciplinas input').val();
+    if(prof != ""){
+      prof_disciplinas.push({professor: prof, disciplina: discip})
+    }
+    
+  })
+dados_restauracao.prof_disciplinas = prof_disciplinas;
+dados_restauracao.existe_restauracao = true;
+dados_restauracao.m5 = num_aulas_por_dia || 5;
+}
+
+$('body').on('change', '.table_pro_disc_turm input', e =>{
+  salvando_prof_disciplina();
+})
+
+$('body').on('change', '.input_professores input', () =>{
+  if(dados_Prouesse.dados_restauracao.existe_restauracao)
+    change_aba1 = {aba1: true, aba2: false, aba3: false, aba4: false, aba5: false};
+})
+
+
+// Salvando código das turmas
+function salvando_codigo_turmas(){
+  ha_dados_preenchidos = true;
+  dados_salvos = true;
+  let a = [];
+  $('.input_turmas input:not(:last)').each((index, elem) =>{
+    a.push($(elem).val());
+  })
+  dados_restauracao.turmas_declaradas = a;
+  turmas_declaradas = a;
+  dados_restauracao.existe_restauracao = true;
+  dados_restauracao.m5 = num_aulas_por_dia || 5;
+}
+$('body').on('change', '.input_turmas input', e =>{
+  salvando_codigo_turmas();
+})
+//Aba2
+
+// Salvando valor dos elementos checados nas turmas
+
+$('body').on('click', '.select_turmas input', e=>{
+    ha_dados_preenchidos = true;
+    dados_salvos = false;
+    let professor = $(e.target).parents('tr').find('.professor').html();
+    let name = [];
+    $(e.target).parent().find('input:checked').each((indice, elemento)=>{
+      name.push($(elemento).attr('name'));  
+    })
+    turmas_prof[professor] = name;
+    dados_restauracao.turmas_prof = turmas_prof;
+    dados_restauracao.existe_restauracao = true;
+    dados_restauracao.m5 = num_aulas_por_dia || 5;
+})
+// Salvando input carga horária
+
+$('body').on('change', '.turmas_ch input', e=>{
+    ha_dados_preenchidos = true;
+    dados_salvos = false;
+    let professor = $(e.target).parents('tr').find('.professor').html();
+    let name = [];
+    $(e.target).parents('.turmas_ch').find('input').each((indice, elemento)=>{
+      name.push('name = ' + $(elemento).attr('name'));
+      name.push($(elemento).val());
+    })
+
+    ch_turmas_prof[professor] = name;
+    dados_restauracao.ch_turmas_prof = ch_turmas_prof;
+    dados_restauracao.existe_restauracao = true;
+    dados_restauracao.m5 = num_aulas_por_dia || 5;
+})
+
+// Salvando check radio aula geminada
+$('body').on('click', '.aula_geminada input', e=>{
+    ha_dados_preenchidos = true;
+    dados_salvos = false;
+    let professor = $(e.target).parents('tr').find('.professor').html();
+    aula_geminada[professor] = $(e.target).val();
+    $(e.target).parents('td').val($(e.target).val());
+    dados_restauracao.aula_geminada = aula_geminada;
+    dados_restauracao.existe_restauracao = true;
+    dados_restauracao.m5 = num_aulas_por_dia || 5;
+})
+
+
+//Aba3
+
+// Salvando opções de flexibilidade
+// $('body').on('click', '.opcao_aulas', e=>{
+//   ha_dados_preenchidos = true;
+//   dados_salvos = false;
+//   let professor = $(e.target).parents('tr').find('.professor').html();
+//   opcao_flexibilidade[professor] = $(e.target).val();
+//   dados_restauracao.opcao_flexibilidade = opcao_flexibilidade;
+// })
+
+
+$('body').on('change', '.n_max_aulas_dia', e=>{
+  console.log("Salvando opção de flexibilidade")
+  console.log($(".n_max_aulas_dia").eq(0).attr("class").match(/opcao_(\d+)/)[1])
+  ha_dados_preenchidos = true;
+  dados_salvos = false;
+  let professor = $(e.target).parents('tr').find('.professor').html();
+  console.log(professor)
+  opcao_flexibilidade[professor] = $(".n_max_aulas_dia").eq(0).attr("class").match(/opcao_(\d+)/)[1];
+  dados_restauracao.opcao_flexibilidade = opcao_flexibilidade;
+  dados_restauracao.existe_restauracao = true;
+  dados_restauracao.m5 = num_aulas_por_dia || 5;
+})
+
+// Salvando número de aulas por dia da semana opcao 1
+$('body').on('change', '.opcao_1', e=>{
+    ha_dados_preenchidos = true;
+    dados_salvos = false;
+    let professor = $(e.target).parents('tr').find('.professor').html();
+    let valor = [];
+    $(e.target).parents('tr').find('.opcao_1').each((indice, elemento)=>{
+      valor.push($(elemento).val());
+    })
+    num_max_dia_semana_opcao_1[professor] = valor;
+    dados_restauracao.num_max_dia_semana_opcao_1 = num_max_dia_semana_opcao_1;
+    dados_restauracao.existe_restauracao = true;
+    dados_restauracao.m5 = num_aulas_por_dia || 5;
+})
+
+// Salvando número de aulas por dia da semana opcao 2 (Não utilizado)
+// $('body').on('change', '.opcao_2', e=>{
+//   ha_dados_preenchidos = true;
+//     dados_salvos = false;
+//     let professor = $(e.target).parents('tr').find('.professor').html();
+//     let valor = [];
+//     $(e.target).parents('tr').find('.opcao_2').each((indice, elemento)=>{
+//       valor.push($(elemento).val());
+//     })
+//     num_max_dia_semana_opcao_2[professor] = valor;
+//     dados_restauracao.num_max_dia_semana_opcao_2 = num_max_dia_semana_opcao_2;
+// })
+
+
+//Aba4
+
+// Salvando Número de dias de trabalho por semana
+
+$('body').on('change', '.n_dias_trab_por_semana ', e=>{
+  ha_dados_preenchidos = true;
+  dados_salvos = false;
+  let professor = $(e.target).parents('tr').find('.professor').html();
+  n_dias_trab_por_semana[professor] = $(e.target).val();
+  dados_restauracao.n_dias_trab_por_semana = n_dias_trab_por_semana;
+  dados_restauracao.existe_restauracao = true;
+  dados_restauracao.m5 = num_aulas_por_dia || 5;
+})
+
+
+// Salvando horários não disponíveis por dia da semana
+
+function salvando_h_n_disp_por_dia_semana(e){ // faz a interação para todos os campos do daquele prof
+  ha_dados_preenchidos = true;
+  dados_salvos = false;
+  let professor = $(e).parents('tr').find('.professor').html();
+  let dia_semana;
+  let dia_obj = new Object();
+  let checado = [];
+  let d;
+
+  $(e).parents('tr').each((indice, elem)=>{
+      for(let i = 2; i <= 6; i++){
+        checado = [];
+        d = '.dia_' + i;
+        $(elem).find(d).each((indice2, elem2)=>{
+          if($(elem2).is(':checked'))
+            checado.push(true);
+          else checado.push(false);
+          dia_semana = $(elem2).attr('class');
+        })
+      dia_obj[dia_semana] = checado;
+      }
+  })
+
+  horarios_n_disp_dias_semana[professor] = dia_obj;
+  dados_restauracao.horarios_n_disp_dias_semana = horarios_n_disp_dias_semana;
+  dados_restauracao.existe_restauracao = true;
+  dados_restauracao.m5 = num_aulas_por_dia || 5;
+}
+
+$('body').on('click', '.horarios_n_disp_por_dias_da_semana input', e=>{
+  salvando_h_n_disp_por_dia_semana(e.target);
+})
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//Saída
+function construtor_array_saida(){
+ 
+  aba1();
+  aba2();
+  aba1();
+  aba3();
+  aba4();
+  salvando_codigo_turmas();
+  let arry_arquivo_configuracao = [];
+  let professor;
+  let disciplinas;
+  let turmas2 = [];
+  let aula_geminada_2;
+  let num_max_trab_por_dia_semana = [];
+  let a;
+  let b;
+  let arry_arquivo_configuracao_2 = [];
+  arry_arquivo_configuracao_0 = [];
+  let arr_saida_adaptado = [];
+
+// Capturando elementos por tr aba2
+$('.dados_professor').each((indice, elemento)=>{
+  //Capturando professro
+  professor = $(elemento).find('.professor').html();
+
+  // Capturando disciplinas a partir de referencia each
+  disciplinas = $('.input_disciplinas input').eq(indice).val();
+
+  if(aula_geminada[professor] == undefined)
+   aula_geminada_2 = 'indiferente';
+  else aula_geminada_2 = aula_geminada[professor];
+    turmas2 = [];
+  $(elemento).find('.select_turmas input:checked').each((valor2, elemento2)=>{
+    turmas2.push($(elemento2).val());
+  })
+
+  // Carga horária igual por turma (sim/não)
+  ch_igual_turmas = $(elemento).find('.carga_horaria_igual').val();
+
+  // Carga horária por turna
+  ch_turma_2 = [];
+  a = turmas2.length;
+  if(ch_igual_turmas == 'sim'){
+    b = $(elemento).find('.turmas_ch input').val();
+    for(let i = 0; i < a; i++){
+      ch_turma_2.push(b);
+    }
+  } if(ch_igual_turmas == 'nao'){
+      $(elemento).find('.turmas_ch input').each((valor3, elemento3)=>{
+        ch_turma_2.push($(elemento3).val());
+      })
+    }
+
+  if(opcao_flexibilidade[professor]==1){
+    num_max_trab_por_dia_semana = num_max_dia_semana_opcao_1[professor];
+  }
+
+  else if(opcao_flexibilidade[professor] == 2){
+    num_max_trab_por_dia_semana = num_max_dia_semana_opcao_2[professor];
+  } else {
+    num_max_trab_por_dia_semana = [5, 5, 5, 5, 5];
+  }
+
+    function array_prof_turmas (referencia){       
+    let a;
+    let b = [];
+    b[0] = null;
+      $(referencia).each((valor, elemento)=>{
+        a = $(elemento).val();
+        if(a !== ""){
+           b.push(a);
+          }
+      })
+    return b;
+    }
+
+    var nomeP = [];
+    var nomeA = [];
+
+    nomeP = array_prof_turmas('.input_professores input');
+    nomeA = array_prof_turmas('.input_turmas input');
+
+    let semGeminadasP;
+    let comGeminadasP;
+    if(aula_geminada_2 == 'sim'){
+      comGeminadasP = true;
+      semGeminadasP = false;
+    }
+    if(aula_geminada_2 == 'nao'){
+      comGeminadasP = false;
+      semGeminadasP = true;
+    }
+    if(aula_geminada_2 == 'indiferente'){
+      comGeminadasP = false;
+      semGeminadasP = false;
+    }
+    
+    if (num_aulas_por_dia == Number()) {
+      num_aulas_por_dia = Number($('#num_aulas_por_dia_input').val())
+    }
+
+    arr_saida_adaptado[0] = undefined;
+    arr_saida_adaptado.push(
+      {
+          prof: professor,
+          disciplina: disciplinas,
+          nomeP: nomeP,
+          nomeA: nomeA,
+          nTurmasP: turmas2.length,
+          lista: turmas2,
+          ch: ch_turma_2,
+          comGeminadasP: comGeminadasP,
+          semGeminadasP: semGeminadasP,
+          maxDiasP: n_dias_trab_por_semana[professor],
+          maxP: num_max_trab_por_dia_semana,
+          horariosND: horarios_n_disp_dias_semana[professor],
+          m5: num_aulas_por_dia
+      })
+  })
+
+//return arr_saida_adaptado;
+let retorno  = adapta_array(arr_saida_adaptado);
+return retorno;
+}
+
+
+function adapta_array(arr_entrada){ // Coleta os dados do con
+
+  let nomeP = new Array();
+  let nomeA =  new Array();
+  nomeP = arr_entrada[1].nomeP;
+  nomeA = arr_entrada[1].nomeA;
+  // let m5 = 5;
+  let qP;
+  let qA;
+  let lista_turmas = new Array();
+  let nTurmasP = new Array();
+  let lista = new Array();
+  let ch = new Array();
+  let maxP = new Array();
+  let horariosND = new Array();
+  let semGeminadasP = new Array();
+  let comGeminadasP = new Array();
+  let maxDiasP = new Array();
+
+  qP = nomeP.length -1; //nro de profs.
+  qA = nomeA.length - 1; //nro de turmas.
+
+  function lista_de_turmas(arr){
+    let a;
+    let b = 0;
+    $('.input_turmas input').each((valor, elem) =>{
+      a = $(elem).val();
+      if(a != ""){
+        lista_de_turmas[b + 1] = a;
+        b++;
+        arr.push(a);
+      }
+     })
+  }
+  lista_de_turmas(lista_turmas);
+
+  // Preenchendo array
+  for(let i = 0; i <  (arr_entrada.length - 1); i++){
+    nTurmasP [i+1] = arr_entrada[i+1].nTurmasP;
+    
+    lista [i+1] = new Array();
+    ch[i+1] = new Array();
+    lista [i+1][0] = null;
+    ch [i+1][0] = null;
+
+    for(let p = 0; p < arr_entrada[i+1].lista.length; p++){
+      lista[i+1][p+1] = lista_turmas.indexOf(arr_entrada[i+1].lista[p]) + 1;
+      ch[i+1][p+1] = arr_entrada[i+1].ch[p];
+    }
+    
+    maxP[i+1] = new Array();
+    for(let p = 0; p < arr_entrada[i+1].maxP.length; p++){
+      maxP[i+1][p] = arr_entrada[i+1].maxP[p];
+    }
+
+    horariosND[i+1] = new Array();
+    let controle = 0; // refente ao dia da semana
+
+    for(const prop in arr_entrada[i+1].horariosND){
+      horariosND[i+1][controle] = new Array();
+
+      for(let n = 0; n < arr_entrada[i+1].horariosND[prop].length; n++){
+        horariosND[i+1][controle][n + 1] = arr_entrada[i+1].horariosND[prop][n];
+      }
+      controle++;
+    }
+
+    semGeminadasP [i+1] = arr_entrada[i+1].semGeminadasP;
+    comGeminadasP [i+1] = arr_entrada[i+1].comGeminadasP;
+    maxDiasP[i+1] = arr_entrada[i+1].maxDiasP;
+  }
+
+  obj_saida = {
+    dados_restauracao: dados_restauracao,
+    nomeA: nomeA,
+    nomeP: nomeP,
+    qP: qP,
+    qA: qA, 
+    nTurmasP: nTurmasP,
+    lista: lista,
+    ch: ch,
+    maxP: maxP,
+    horariosND: horariosND, 
+    semGeminadasP: semGeminadasP, 
+    comGeminadasP: comGeminadasP,
+    maxDiasP: maxDiasP,
+    tabelaP: '',
+    tabelaA: '',
+    maxHorariosND: '',
+    m5: arr_entrada[1].m5
+  }
+  return obj_saida;
+  //gerando_arq_conf(obj_saida)
+}
+
+
+function gerando_arq_conf(arr_para_json, id_nome){
+  data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(arr_para_json));
+  let a = document.createElement("a");
+  document.body.appendChild(a);
+  a.style = "display: none";
+  a.href = 'data:' + data ;
+  let b = $(id_nome).val();
+  if(b == "")
+    b = t('arquivo.nome_padrao');
+  a.download = b + ".json";
+  a.click();
+}
+
+
+ // Gerando arquivo de configuração
+$('body').on('click', '#gerador_config', e =>{
+  var n_feedbacks = Number(localStorage.getItem("feedback1"))
+
+  // Pesquisa de opinião
+  gerando_arq_conf(arry_saida_json_adaptado, '#nome_arquivo_config');
+  return
+
+  console.log(n_feedbacks)
+
+  if(n_feedbacks == 1 || n_feedbacks % frequencia_feedback == 0){
+    construir_formulario_1_feedback()
+  } else {
+    gerando_arq_conf(arry_saida_json_adaptado, '#nome_arquivo_config');
+    localStorage.setItem("feedback1", n_feedbacks + 1);
+  }
+})
+
+
+/* =====================================================================
+   QUADROS DE HORÁRIOS: exibição na tela (aba Resultados) e impressão
+   - Cada quadro é uma <table> montada por quadro_html(); todo texto vindo do usuário passa por esc().
+   - Tela: os quadros ficam em linhas ("row t-horarios") de 'lado_lado' quadros.
+   - Impressão: documento próprio (documento_impressao()) enviado a um <iframe> oculto, sem pop-up
+     (não é barrado por bloqueadores). O layout é uma grade CSS com @page, quebras de página por seção
+     e quadros que nunca são cortados entre páginas.
+   ===================================================================== */
+function esc(valor){
+  return String(valor).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+const DIAS_QUADRO = ['segunda', 'terca', 'quarta', 'quinta', 'sexta'];
+
+// HTML de UM quadro. linhas[j][h] = texto do horário j (0..4) no dia h (0..4); abreviar = nomes curtos dos dias
+function quadro_html(titulo, linhas, abreviar){
+  let q = '<table class="t-horarios text-center align-middle"><thead class="t_cabacalho">';
+  q += '<tr><th colspan="6">' + esc(titulo) + '</th></tr><tr><th>' + esc(t('quadro.horario_dia')).replace('\\', '\\<wbr>') + '</th>';
+  DIAS_QUADRO.forEach(d => { q += '<th>' + t((abreviar ? 'dias_abrev.' : 'dias.') + d) + '</th>'; });
+  q += '</tr></thead><tbody>';
+  linhas.forEach((celulas, j) => {
+    q += '<tr><td>' + t('comum.horario_' + (j + 1)) + '</td>';
+    celulas.forEach(c => { q += '<td>' + esc(c) + '</td>'; });
+    q += '</tr>';
+  });
+  return q + '</tbody></table>';
+}
+
+// Número de aulas por dia dos quadros (4, 5 ou 6), vindo do arquivo importado ou da aba "Dados iniciais"
+function aulas_por_dia_quadro(){
+  return dados_Prouesse.dados_restauracao.m5 || dados_Prouesse.m5 || num_aulas_por_dia || 5;
+}
+
+// Um quadro por professor: células = turma onde ele leciona ('-' = livre)
+function quadros_professores(abreviar){
+  const n = aulas_por_dia_quadro();
+  const tabelaP = dados_Prouesse.tabelaP;
+  const lista_turmas = dados_Prouesse.dados_restauracao.turmas_declaradas;
+  const lista_prof = dados_Prouesse.dados_restauracao.prof_disciplinas;
+  const quadros = [];
+  for(let i = 1; i < tabelaP.length; i++){
+    const linhas = [];
+    for(let j = 1; j <= n; j++){
+      const celulas = [];
+      for(let h = 0; h < 5; h++){
+        const turma = tabelaP[i][h][j];
+        celulas.push(turma ? (lista_turmas[turma - 1] !== undefined ? lista_turmas[turma - 1] : '-') : '-');
+      }
+      linhas.push(celulas);
+    }
+    quadros.push(quadro_html(t('quadro.professor', {professor: lista_prof[i - 1].professor}), linhas, abreviar));
+  }
+  return quadros;
+}
+
+// Um quadro por turma: células = disciplina ou professor ('-' = sem aula). prop_obj: 'disciplina' | 'professor'
+function quadros_turmas(prop_obj, abreviar){
+  const tabela = dados_Prouesse.tabelaA;
+  const lista_turmas = dados_Prouesse.dados_restauracao.turmas_declaradas;
+  const prof_disciplinas = dados_Prouesse.dados_restauracao.prof_disciplinas;
+  const n = aulas_por_dia_quadro();
+  const quadros = [];
+  for(let i = 1; i < tabela.length; i++){
+    const linhas = [];
+    for(let j = 1; j <= n; j++){
+      const celulas = [];
+      for(let h = 0; h < 5; h++){
+        const a = tabela[i][h][j] - 1;
+        celulas.push(prof_disciplinas[a] !== undefined ? prof_disciplinas[a][prop_obj] : '-');
+      }
+      linhas.push(celulas);
+    }
+    quadros.push(quadro_html(t('quadro.turma', {turma: lista_turmas[i - 1]}), linhas, abreviar));
+  }
+  return quadros;
+}
+
+// imprimir=false: linhas da tela; imprimir=true: cada quadro em um <div class="quadro"> (a grade fica por conta do CSS)
+function montar_quadros(quadros, lado_lado, imprimir){
+  lado_lado = Number(lado_lado) || 2;
+  if(imprimir)
+    return quadros.map(q => '<div class="quadro">' + q + '</div>').join('');
+  let saida = '';
+  quadros.forEach((q, i) => {
+    if(i % lado_lado == 0) saida += '<div class="row t-horarios">';
+    saida += '<div>' + q + '</div>';
+    if((i + 1) % lado_lado == 0 || i == quadros.length - 1) saida += '</div>';   // a última linha também é fechada
+  });
+  return saida;
+}
+
+function construtor_quadro_de_horarios_prof(lado_lado, imprimir){
+  return montar_quadros(quadros_professores(imprimir && lado_lado >= 3), lado_lado, imprimir);
+}
+
+function construtor_quadro_de_horarios_turma_disc(prop_obj, lado_lado, imprimir){
+  return montar_quadros(quadros_turmas(prop_obj, imprimir && lado_lado >= 3), lado_lado, imprimir);
+}
+
+
+let imprimir_quadro_de_horarios_turma_disc = '<div class="container"><div class="row justify-content-center"><div class="col-12 col-md-8 col-lg-6 align-self-center form_salvar"><label for="selecao_salvar">' + t('imprimir.label_secao') + '</label><select class="form-control" id="selecao_salvar"><option value="1">' + t('aba6.horarios_professor') + '</option><option value="2">' + t('aba6.horarios_turma_disciplinas') + '</option><option value="3">' + t('aba6.horarios_turma_professores') + '</option><option value="4">' + t('imprimir.opcao_todas') + '</option></select><hr><label for="lado-lado">' + t('imprimir.label_lado_a_lado') + '</label><select class="form-control" id="lado-lado"><option value="1">1</option><option value="2" selected="selected">2</option><option value="3">3</option> <option value="4">4</option></select><hr><label for="orientacao">' + t('imprimir.label_orientacao') + '</label><select class="form-control" id="orientacao"><option value="portrait" selected="selected">' + t('imprimir.retrato') + '</option><option value="landscape">' + t('imprimir.paisagem') + '</option></select><hr><button class="btn btn-success" id="imprimir">' + t('imprimir.btn_imprimir') + '</button></div></div></div>'
+
+// Com 3 ou 4 quadros por linha, sugere a orientação paisagem (a menos que a pessoa já tenha escolhido uma)
+$('body').on('change', '#orientacao', function(){ $(this).data('manual', true); });
+$('body').on('change', '#lado-lado', function(){
+  if(!$('#orientacao').data('manual'))
+    $('#orientacao').val(Number($(this).val()) >= 3 ? 'landscape' : 'portrait');
+});
+
+
+$('body').on('click', '#aba6-tab', ()=>{
+  
+  if(dados_Prouesse.dados_restauracao.existe_resultados){
+      $('#aba6_1').html(construtor_quadro_de_horarios_prof(2, false));
+      $('#aba6_2').html(construtor_quadro_de_horarios_turma_disc('disciplina', 2, false));
+      $('#aba6_3').html(construtor_quadro_de_horarios_turma_disc('professor', 2, false));
+      $('#aba6_4').html(imprimir_quadro_de_horarios_turma_disc);
+  } else {
+    let html_imprimir = '<div class="quadro_horarios_vazio">' + t('aba6.vazio_pos_clique') + '</div></div>';
+    $('.aba6').html(html_imprimir);
+  }
+})
+
+
+// Corpo da impressão: uma <section> por seção escolhida (1 = professores, 2 = turmas/disciplinas, 3 = turmas/professores, 4 = todas)
+function construtor_q_horarios_export(){
+  const opcao_horario = $('#selecao_salvar').val();
+  const _lado_lado = Number($('#lado-lado').val()) || 2;
+  const secoes = {
+    1: {titulo: 'aba6.horarios_professor',          quadros: () => construtor_quadro_de_horarios_prof(_lado_lado, true)},
+    2: {titulo: 'aba6.horarios_turma_disciplinas',   quadros: () => construtor_quadro_de_horarios_turma_disc('disciplina', _lado_lado, true)},
+    3: {titulo: 'aba6.horarios_turma_professores',   quadros: () => construtor_quadro_de_horarios_turma_disc('professor', _lado_lado, true)}
+  };
+  const escolhidas = (opcao_horario == 4) ? [1, 2, 3] : [Number(opcao_horario)];
+  return escolhidas.map(s =>
+    '<section class="secao"><h2>' + esc(t(secoes[s].titulo)) + '</h2><div class="grade">' + secoes[s].quadros() + '</div></section>'
+  ).join('');
+}
+
+// Documento HTML completo da impressão (independente da página: tema claro, A4, sem depender de CDN)
+function documento_impressao(){
+  const lado = Number($('#lado-lado').val()) || 2;
+  const orientacao = ($('#orientacao').val() === 'landscape') ? 'landscape' : 'portrait';
+  const fonte = {1: 10.5, 2: 9, 3: 7, 4: 5.4}[lado] || 9;   // pt; diminui conforme cabem mais quadros por linha
+  const margem_celula = {1: '1.4mm 1mm', 2: '1.2mm 0.8mm', 3: '1mm 0.5mm', 4: '0.8mm 0.3mm'}[lado] || '1.2mm 0.8mm';
+  const idioma = (IDIOMA === 'en') ? 'en' : 'pt-br';
+  const data = new Date().toLocaleDateString(idioma === 'en' ? 'en-US' : 'pt-BR');
+  const css = [
+    '@page { size: A4 ' + orientacao + '; margin: 12mm 9mm; }',
+    '* { box-sizing: border-box; }',
+    'body { margin: 0; color: #111; font-family: "Segoe UI", Calibri, "Helvetica Neue", Arial, sans-serif; font-size: ' + fonte + 'pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }',
+    'header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4mm; font-size: 8pt; color: #555; }',
+    'header h1 { margin: 0; font-size: 12pt; color: #111; }',
+    '.secao + .secao { break-before: page; }',
+    'h2 { margin: 0 0 3mm; padding-bottom: 1mm; font-size: 11pt; border-bottom: 2px solid #153f3e; break-after: avoid; }',
+    '.grade { display: grid; grid-template-columns: repeat(' + lado + ', minmax(0, 1fr)); gap: 4mm 3mm; align-items: start; }',
+    '.quadro { break-inside: avoid; }',
+    'table.t-horarios { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: center; }',
+    '.t-horarios th, .t-horarios td { border: 1px solid #555; padding: ' + margem_celula + '; overflow-wrap: break-word; line-height: 1.2; }',
+    '.t-horarios thead tr:first-child th { background: #dfe8e7; font-size: 1.1em; text-align: center; }',
+    '.t-horarios thead tr:nth-child(2) th { background: #f1f5f5; font-size: .9em; }',
+    '.t-horarios thead tr:nth-child(2) th:first-child, .t-horarios tbody td:first-child { width: ' + (lado >= 4 ? 11 : 14) + '%; }',
+    '.t-horarios tbody td:first-child {  font-weight: 600; background: #f6f8f8; }',
+    '.t-horarios tbody tr:nth-child(even) td:not(:first-child) { background: #fafcfc; }'
+  ].join('\n');
+  return '<!DOCTYPE html><html lang="' + idioma + '"><head><meta charset="utf-8"><title>' + esc(t('imprimir.titulo_janela')) + '</title><style>' + css + '</style></head><body>' +
+    '<header><h1>' + esc(t('imprimir.titulo_janela')) + '</h1><span>' + data + '</span></header>' + construtor_q_horarios_export() + '</body></html>';
+}
+
+// Imprime em um <iframe> oculto: sem pop-up, espera o documento carregar antes de chamar print() e
+// usa o título da impressão como nome sugerido do PDF.
+function imprimir_quadros(){
+  $('#frame_impressao').remove();
+  const frame = document.createElement('iframe');
+  frame.id = 'frame_impressao';
+  frame.setAttribute('aria-hidden', 'true');
+  frame.tabIndex = -1;
+  frame.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
+  const titulo_original = document.title;
+  frame.onload = function(){
+    const janela = frame.contentWindow;
+    const restaurar = function(){ document.title = titulo_original; };
+    janela.addEventListener('afterprint', restaurar);
+    document.title = t('imprimir.titulo_janela');
+    try { janela.focus(); janela.print(); } catch(e) { restaurar(); }
+  };
+  frame.srcdoc = documento_impressao();
+  document.body.appendChild(frame);
+}
+
+$('body').on('click', '#imprimir', imprimir_quadros);
+
+
+$('body').on('change', '#aba1 input', e=>{
+  dados_salvos = false;
+})
+$('body').on('change', '#aba2 input', e=>{
+  dados_salvos = false;
+})
+$('body').on('change', '#aba3 input', e=>{
+  dados_salvos = false;
+})
+$('body').on('change', '#aba4 input', e=>{
+  dados_salvos = false;
+})
+
+</script>  
+
+
+<script crossorigin="anonymous">
+
+/////////////////////// Registros ///////////////////////
+
+let versao_prouesse = 37
+var ip_uuid = ""
+var frequencia_feedback = 10
+
+
+// Função para enviar UUID e IP via POST
+function registrar_dados(registro) {
+  function enviar_dados (registro){
+    registro.uuid = gerar_uuid()
+
+    $.ajax({
+    url: "https://prouesse.fly.dev/registrar",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify(registro),
+    success: function(response) {
+      console.log("Sucesso:", response);
+    },
+    error: function(error) {
+      console.error("Erro ao enviar dados:", error);
+    }
+  });
+  }
+  
+  if(ip_uuid == ""){
+    $.getJSON("https://api64.ipify.org?format=json", function(data) {
+      ip_uuid = data.ip
+      registro.ip = ip_uuid
+      enviar_dados(registro)
+    }).fail(function() {
+      console.error("Erro ao obter IP e informações de localização");
+      registro.ip = ip_uuid
+      enviar_dados(registro)
+    });
+  } else {
+    registro.ip = ip_uuid
+    enviar_dados(registro)
+  }
+
+}
+
+// Função para gerar e armazenar UUID usando crypto.randomUUID()
+function gerar_uuid() {
+  let uuid = localStorage.getItem("userUUID");
+  if (!uuid) {
+    uuid = crypto.randomUUID();
+    localStorage.setItem("userUUID", uuid);
+  }
+  return uuid;
+}
+
+
+function mostrar_modal(titulo, mensagem, botao, botao_eh_html = false, tamanhoModal = "xl") { // sm, lg ou xl
+  // Remover todas as classes de tamanho de modal previamente adicionadas
+  $('#myModal .modal-dialog').removeClass('modal-sm modal-lg modal-xl');
+
+  // Adicionar a classe de tamanho de modal especificada
+  if (tamanhoModal) {
+    tamanhoModal = "modal-" + tamanhoModal    
+    $('#myModal .modal-dialog').addClass(tamanhoModal);
+  }
+
+  // Construir o conteúdo da modal
+  let conteudoModal = '<div>' + mensagem + '</div>';
+  $('#myModal .modal-body').html(conteudoModal);
+
+  let botaoModal
+
+  if(botao_eh_html){
+    botaoModal = botao;
+  } else {
+    botaoModal = '<button class="btn btn-success" data-bs-dismiss="modal">' + botao + '</button>';
+  }
+  
+  $('#myModal .modal-footer').html(botaoModal);
+
+  $('.modal-title').html(titulo);
+
+  // Mostrar a modal
+  $("#myModal").modal("show");
+}
+
+function verificar_versao_prouesse (){
+    // Verificando última versão
+    $.getJSON("https://prouesse.fly.dev/versao", function(data) {      
+        console.log("Versão Prouesse: ", + data.versao[0])
+    if(Number(data.versao[0]) > versao_prouesse){
+      mostrar_modal(t('modal.nova_versao.titulo'), 
+      t('modal.nova_versao.mensagem'),
+       t('comum.ok'),
+       false,
+      "lg")
+    }
+
+    }).fail(function() {
+      console.error("Erro ao obter dados de versão");
+    });
+
+}
+
+
+$(document).ready(function() {
+  // Registrando acesso à página
+    const registro = { 
+      tipo: "paǵina configuração",
+      registro: "acesso" 
+    };
+
+    // Configurando a versão do Prouesse
+    $("#versao_prouesse").html(versao_prouesse)
+
+    registrar_dados(registro)
+
+    verificar_versao_prouesse()
+
+    //construir_formulario_1_feedback()
+    
+  });
+
+
+//////// Formulário de feedback
+
+function toggleQuestion5(show) {
+      $('#group-question5').toggle(show);
+      if(show){
+        $('#group-question5').addClass("required")
+      } else {
+        $('#group-question5').removeClass("required")
+      }
+    }
+
+$("body").on("click", "#enviar_formulario_feedback", () =>{
+  console.log("Enviando formulário")
+  function validateForm() {
+    console.log("Validando formulário")
+    let isValid = true;
+  $('.form-group.required').each(function() {
+    const inputs = $(this).find('input[required]');
+    const isChecked = inputs.is(':checked');
+    if (!isChecked) {
+      $(this).addClass('has-error');
+      isValid = false;
+    } else {
+      $(this).removeClass('has-error');
+    }
+  });
+  return isValid;
+}
+
+  
+  if (!validateForm()) {
+    $('#alertMessage').toggle().delay(3000).fadeOut();
+    return;
+  }
+
+  const form = $('#formulario_feedback');
+  const formData = form.serializeArray();
+  
+  // Agrupar respostas por pergunta
+  const groupedData = {};
+  formData.forEach((item) => {
+    const questionLabel = $('[name="' + item.name + '"]').closest('.form-group').find('label').first().text().trim();
+    
+    if (!groupedData[item.name]) {
+      groupedData[item.name] = {
+        pergunta: questionLabel,
+        resposta: []
+      };
+    }
+    groupedData[item.name].resposta.push(item.value);
+  });
+  
+  // Converter para array
+  const json = Object.values(groupedData);
+
+  $("#formModal").modal("hide")
+  
+  let num_form_feedback = $("#num_form_feedback").attr("value")
+  let nome_feedback = "feedback" + num_form_feedback
+
+  var n_feedbacks = Number(localStorage.getItem(nome_feedback)) + 1
+  console.log("total de feedbacks = " + n_feedbacks + ". Nome feedback = " + nome_feedback)
+  
+  localStorage.setItem(nome_feedback, n_feedbacks);
+  
+  const registro = { 
+    versao: versao_prouesse,
+    registro: "feedback",
+    resultado: {feedback: 1, resultado: json},
+    };
+
+    console.log(registro)
+    //return
+
+    registrar_dados(registro)
+
+
+})
+
+// Construtor do formulário de feedback
+
+function construir_formulario_1_feedback(){
+  console.log("construindo formulário")
+  
+  let titulo = t('feedback.titulo')
+  
+  $("#formModalLabel").html(titulo)
+
+  let corpo_formulario = `
+          <!-- Pergunta 1 -->
+          <div id="num_form_feedback" value = 1></div>
+          <div class="form-group required" id="group-question1">
+            <label>${t('feedback.p1.pergunta')}</label><br>
+            <input type="checkbox" name="question1" value="Aba Dados iniciais" required> ${t('feedback.opcao_dados_iniciais')}<br>
+            <input type="checkbox" name="question1" value="Aba Professores e turmas" required> ${t('feedback.opcao_professores_turmas')}<br>
+            <input type="checkbox" name="question1" value="Aba Aulas por dia da semana" required> ${t('feedback.opcao_aulas_dia_semana')}<br>
+            <input type="checkbox" name="question1" value="Aba Horários não disponíveis" required> ${t('feedback.opcao_horarios_nao_disponiveis')}<br>
+          </div>
+          <!-- Pergunta 2 -->
+          <div class="form-group required" id="group-question2">
+            <label>${t('feedback.p2.pergunta')}</label><br>
+            <input type="checkbox" name="question2" value="Aba Dados iniciais" required> ${t('feedback.opcao_dados_iniciais')}<br>
+            <input type="checkbox" name="question2" value="Aba Professores e turmas" required> ${t('feedback.opcao_professores_turmas')}<br>
+            <input type="checkbox" name="question2" value="Aba Aulas por dia da semana" required> ${t('feedback.opcao_aulas_dia_semana')}<br>
+            <input type="checkbox" name="question2" value="Aba Horários não disponíveis" required> ${t('feedback.opcao_horarios_nao_disponiveis')}<br>
+          </div>
+          <!-- Pergunta 3 -->
+          <div class="form-group required" id="group-question3">
+            <label>${t('feedback.p3.pergunta')}</label><br>
+            <input type="radio" name="question3" value="Fácil" required> ${t('feedback.p3.facil')}<br>
+            <input type="radio" name="question3" value="Difícil" required> ${t('feedback.p3.dificil')}<br>
+          </div>
+          <!-- Pergunta 4 -->
+          <div class="form-group required" id="group-question4">
+            <label>${t('feedback.p4.pergunta')}</label><br>
+            <input type="radio" name="question4" value="Sim" onclick="toggleQuestion5(true)" required> ${t('comum.sim')}<br>
+            <input type="radio" name="question4" value="Não" onclick="toggleQuestion5(false)" required> ${t('comum.nao')}<br>
+          </div>
+          <!-- Pergunta 5 (aparece se a resposta da Pergunta 4 for "Sim") -->
+          <div class="form-group" id="group-question5" style="display: none;">
+            <label>${t('feedback.p5.pergunta')}</label><br>
+            <input type="radio" name="question5" value="Fácil de entender" required> ${t('feedback.p5.facil')}<br>
+            <input type="radio" name="question5" value="Difícil de entender" required> ${t('feedback.p5.dificil')}<br>
+          </div>
+          <!-- Pergunta 6 -->
+          <div class="form-group">
+            <label>${t('feedback.p6.pergunta')}</label>
+            <textarea name="question6" class="form-control" rows="3"></textarea>
+          </div>  `
+  $("#formulario_feedback").html(corpo_formulario)
+
+  $("#formModal .modal-footer").html('<button type="button" class="btn btn-primary" id = "enviar_formulario_feedback">' + t('feedback.btn_enviar') + '</button>')
+
+  $("#formModal").modal("show");
+}
+
+
+</script>  
+</body>
+</html>
+
+

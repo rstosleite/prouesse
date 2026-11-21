@@ -1,0 +1,23 @@
+# Build output
+*.class
+out/
+build/
+target/
+
+# IDEs
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+nbproject/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local temporary files
+__pycache__/
+*.log
